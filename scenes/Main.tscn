@@ -10,3 +10,5 @@ position = Vector2(576, 550)
 
 [node name="PlayAreaPos" type="Marker2D" parent="."]
 position = Vector2(576, 324)
+
+[node name="Timer" type="Timer" parent="."]
