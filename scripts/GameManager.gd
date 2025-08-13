@@ -1,4 +1,4 @@
-# scripts/GameManager.gd attached to Main.tcsn
+# scripts/GameManager.gd attached to Main
 extends Node2D
 
 const CardScene = preload("res://scenes/Card.tscn")

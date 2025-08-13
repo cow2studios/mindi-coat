@@ -1,4 +1,4 @@
-# scripts/Card.gd attached to Card.tscn
+# scripts/Card.gd attached to Card
 extends Area2D
 
 signal card_clicked(card_data)
