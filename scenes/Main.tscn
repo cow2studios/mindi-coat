@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://kph56udacacy"]
+
+[ext_resource type="Script" uid="uid://phydaif8utxe" path="res://scripts/GameManager.gd" id="1_elqb8"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_elqb8")
+
+[node name="PlayerHandPos" type="Marker2D" parent="."]
+position = Vector2(576, 550)
+
+[node name="PlayAreaPos" type="Marker2D" parent="."]
+position = Vector2(576, 324)
