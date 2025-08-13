@@ -1,4 +1,4 @@
-# scripts/CardResourceGenerator.gd attached to cardResourceGenerator.tcsn
+# scripts/CardResourceGenerator.gd attached to cardResourceGenerator
 # This script generates card resources .tres files from the source images.
 @tool
 extends Node

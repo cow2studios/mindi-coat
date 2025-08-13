@@ -1,4 +1,4 @@
-# scripts/deck.gd attached to deck.tcsn
+# scripts/deck.gd attached to deck
 extends Node2D
 
 var card_resources: Array[CardData] = []
