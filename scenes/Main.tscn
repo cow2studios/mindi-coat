@@ -12,3 +12,4 @@ position = Vector2(576, 550)
 position = Vector2(576, 324)
 
 [node name="Timer" type="Timer" parent="."]
+one_shot = true
