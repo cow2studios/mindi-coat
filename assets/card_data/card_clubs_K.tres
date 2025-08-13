@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://blnb0d3v208xg"]
+
+[ext_resource type="Script" uid="uid://bocxpoitxx87n" path="res://scripts/CardData.gd" id="1_qip2q"]
+[ext_resource type="Texture2D" uid="uid://chdl5o5c5elnh" path="res://assets/cards/card_clubs_K.png" id="2_wa0gx"]
+
+[resource]
+script = ExtResource("1_qip2q")
+suit = 0
+rank = 11
+value = 13
+texture = ExtResource("2_wa0gx")
