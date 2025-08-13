@@ -17,7 +17,6 @@ export_presets.cfg
 *.uid
 
 # --- User/Editor Files ---
-*.tres
 *.tscn.converted
 *.tmp
 *.imported
