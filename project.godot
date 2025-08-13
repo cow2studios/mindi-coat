@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="Mindi-Coat"
+run/main_scene="uid://kph56udacacy"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Deck="*res://scripts/deck.gd"
 
 [rendering]
 

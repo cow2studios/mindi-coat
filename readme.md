@@ -71,24 +71,9 @@ res://
 
 ---
 
-## ▶️ How to Run
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/KavyaJP/MindiCoat.git
-   cd MindiCoat
-   ```
-
-2. Open the project in [Godot Engine](https://godotengine.org/) (version 4.x recommended)
-
-3. Run the `Game.tscn` scene
-
----
-
 ## 📸 Screenshots
 
-_(Add screenshots here as development progresses)_
+_(I will keep adding screenshots as per the development progresses)_
 
 ---
 
