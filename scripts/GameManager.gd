@@ -13,14 +13,14 @@ enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
 var current_state = GameState.WAITING
 
 # -- Game Logic Variables --
-var players_hands: Array = [[], [], [], []]
+var players_hands: Array = [] # Initialize as an empty array
 var cards_on_table: Array[CardData] = []
-var player_who_played: Array[int] = [] # Track who played which card
+var player_who_played: Array[int] = []
 var current_turn_index = 0
 var trick_leader_index = 0
 var hukum_suit: CardData.Suit
 var is_hukum_set = false
-var team_tricks_captured: Array = [[], []] # Team 0 (Player/Partner), Team 1 (Opponents)
+var team_tricks_captured: Array = [[], []]
 
 func _ready():
 	timer.timeout.connect(on_timer_timeout)
@@ -28,7 +28,12 @@ func _ready():
 
 func start_new_game():
 	# --- Reset game variables ---
-	players_hands = [[], [], [], []]
+	## NEW AND CORRECTED INITIALIZATION ##
+	players_hands.clear()
+	for i in range(4):
+		var typed_hand: Array[CardData] = [] # Create a specifically typed array
+		players_hands.append(typed_hand) # Add the typed array to our list of hands
+
 	cards_on_table.clear()
 	player_who_played.clear()
 	is_hukum_set = false
@@ -53,7 +58,6 @@ func play_card(card_data: CardData, player_index: int):
 	cards_on_table.append(card_data)
 	player_who_played.append(player_index)
 	
-	# --- NEW: Logic to set the Hukum (Trump) ---
 	if not is_hukum_set and cards_on_table.size() > 1:
 		var lead_suit = cards_on_table[0].suit
 		if card_data.suit != lead_suit:
@@ -68,60 +72,74 @@ func play_card(card_data: CardData, player_index: int):
 	
 	if cards_on_table.size() == 4:
 		current_state = GameState.EVALUATING
-		# Wait a moment before evaluating so the player can see the last card
 		timer.start(1.5)
 	else:
 		next_turn()
 
 func _on_card_clicked(card_data: CardData):
 	if current_state != GameState.PLAYER_TURN: return
-	play_card(card_data, 0)
+	
+	var legal_moves = get_legal_moves(0)
+	
+	if card_data in legal_moves:
+		play_card(card_data, 0)
+	else:
+		print("Illegal move! You must follow the lead suit.")
 
-# --- NEW: The core game logic function ---
+func get_legal_moves(player_index: int) -> Array[CardData]:
+	# This function is now correct because players_hands[player_index] is a typed array
+	var hand: Array[CardData] = players_hands[player_index]
+	
+	if cards_on_table.is_empty():
+		return hand
+	
+	var lead_suit = cards_on_table[0].suit
+	var moves_in_suit: Array[CardData] = []
+	
+	for card in hand:
+		if card.suit == lead_suit:
+			moves_in_suit.append(card)
+	
+	if not moves_in_suit.is_empty():
+		return moves_in_suit
+	else:
+		return hand
+
 func evaluate_trick():
 	var winning_card = cards_on_table[0]
-	var winner_index_in_trick = 0 # This is the index within the trick (0-3)
+	var winner_index_in_trick = 0
 	var lead_suit = winning_card.suit
 	
-	# Loop through the other 3 cards on the table
 	for i in range(1, cards_on_table.size()):
 		var current_card = cards_on_table[i]
 		
-		# Condition 1: Current card is hukum, but winner is not. Current card wins.
 		if is_hukum_set and current_card.suit == hukum_suit and winning_card.suit != hukum_suit:
 			winning_card = current_card
 			winner_index_in_trick = i
-		# Condition 2: Both are hukum. Highest value wins.
 		elif is_hukum_set and current_card.suit == hukum_suit and winning_card.suit == hukum_suit:
 			if current_card.value > winning_card.value:
 				winning_card = current_card
 				winner_index_in_trick = i
-		# Condition 3: Neither are hukum, but both are lead suit. Highest value wins.
 		elif current_card.suit == lead_suit and winning_card.suit == lead_suit:
 			if current_card.value > winning_card.value:
 				winning_card = current_card
 				winner_index_in_trick = i
 	
-	# Get the actual player index of the winner (0-3)
 	self.trick_leader_index = player_who_played[winner_index_in_trick]
-	var winner_team = trick_leader_index % 2 # 0 or 2 -> Team 0. 1 or 3 -> Team 1.
+	var winner_team = trick_leader_index % 2
 	
-	# Add the captured cards to the winner's team pile
 	team_tricks_captured[winner_team].append_array(cards_on_table)
 	
 	print("Trick won by Player %s with the %s of %s" % [trick_leader_index, CardData.Rank.keys()[winning_card.rank], CardData.Suit.keys()[winning_card.suit]])
 	
-	# Clean up for the next trick
 	cards_on_table.clear()
 	player_who_played.clear()
 	for node in get_tree().get_nodes_in_group("table_cards"):
 		node.queue_free()
 	
-	# Check if the game is over
 	if players_hands[0].is_empty():
 		print("--- GAME OVER ---")
 		current_state = GameState.WAITING
-		# We will add final scoring later
 	else:
 		start_next_trick()
 
@@ -129,13 +147,11 @@ func next_turn():
 	current_turn_index = (current_turn_index + 1) % 4
 	set_turn_state()
 
-# --- NEW: A dedicated function to start a new trick ---
 func start_next_trick():
 	print("--- New trick started by Player %s ---" % trick_leader_index)
 	current_turn_index = trick_leader_index
 	set_turn_state()
 
-# --- NEW: Handles what to do when the timer finishes ---
 func on_timer_timeout():
 	if current_state == GameState.AI_TURN:
 		do_ai_turn()
@@ -147,17 +163,19 @@ func set_turn_state():
 		current_state = GameState.PLAYER_TURN
 	else:
 		current_state = GameState.AI_TURN
-		timer.start(0.75) # AI's "thinking" time
+		timer.start(0.75)
 
 func do_ai_turn():
-	if current_state != GameState.AI_TURN: return # Safety check
+	if current_state != GameState.AI_TURN: return
 	
-	var ai_hand = players_hands[current_turn_index]
-	# Simple AI: just play the first card
-	var card_to_play = ai_hand[0]
-	play_card(card_to_play, current_turn_index)
+	var legal_moves = get_legal_moves(current_turn_index)
+	
+	if not legal_moves.is_empty():
+		var card_to_play = legal_moves[0]
+		play_card(card_to_play, current_turn_index)
+	else:
+		print("ERROR: AI has no legal moves, this shouldn't happen.")
 
-# (The display_player_hand and display_card_on_table functions remain the same)
 func display_player_hand():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
