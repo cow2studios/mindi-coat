@@ -1,5 +1,8 @@
 # 🃏 Mindi Coat - Card Game (Made with Godot)
 
+![Godot Engine](https://img.shields.io/badge/engine-godot-blue?logo=godot-engine)
+![Platform](https://img.shields.io/badge/platform-android%20%7C%20windows-lightgrey)
+
 A modern digital version of the classic Indian card game **Mindi Coat (Dehla Pakad)**, developed using the **Godot Engine** with a focus on **mobile-friendly performance** and **clean UI**.
 
 ---
@@ -17,8 +20,7 @@ A modern digital version of the classic Indian card game **Mindi Coat (Dehla Pak
 - Player hand and trick system
 - Core Mindi Coat rules implemented:
   - Trump suit reveal
-  - Catching the Mindis (7s)
-  - Winning Dehla (10s)
+  - Catching the Mindis (10s)
 - Local multiplayer support (planned)
 - Optimized for mobile devices
 - Clean, responsive UI
@@ -28,19 +30,22 @@ A modern digital version of the classic Indian card game **Mindi Coat (Dehla Pak
 
 ## 📱 Platforms
 
-- Android (Primary target)
-- Windows (for testing/debugging)
+- Android
+- Windows
 
 ---
 
 ## 🚧 Roadmap
 
-- [x] Card scene and logic system
-- [x] Basic player hand and trick-taking
+### MVP (Minimum Viable Version)
+- [ ] Card scene and logic system
+- [ ] Basic player hand and trick-taking
 - [ ] Trump suit handling
 - [ ] Scoring system
-- [ ] Full Mindi/Dehla logic
-- [ ] AI opponent (optional)
+- [ ] Mindi/Dehla capture rules
+
+### Post-MVP (Nice to Have)
+- [ ] AI opponent
 - [ ] Local multiplayer
 - [ ] Online multiplayer (stretch goal)
 
@@ -84,18 +89,6 @@ res://
 ## 📸 Screenshots
 
 _(Add screenshots here as development progresses)_
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome! If you'd like to improve the AI, add UI polish, or help with multiplayer — feel free to fork and submit a PR.
-
----
-
-## 📜 License
-
-MIT License — Free to use, modify, and share.
 
 ---
 
