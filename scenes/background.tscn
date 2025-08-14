@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://shgucd7l2skg"]
 
-[ext_resource type="Texture2D" uid="uid://bvkvvf7hbbgei" path="res://assets/gradient-poker-table-background/background.jpg" id="1_bkp1e"]
+[ext_resource type="Texture2D" uid="uid://c4o7dqkc2ecxb" path="res://assets/background/background.jpg" id="1_bkp1e"]
 
 [node name="background" type="Sprite2D"]
-position = Vector2(579, 323)
-scale = Vector2(0.385, 0.38)
+position = Vector2(967, 535)
+scale = Vector2(0.64, 0.54)
 texture = ExtResource("1_bkp1e")

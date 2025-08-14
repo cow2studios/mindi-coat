@@ -11,10 +11,12 @@ extends CanvasLayer
 @onready var game_over_panel = $MainContainer/CenterContainer/GameOverPanel
 @onready var game_over_label = $MainContainer/CenterContainer/GameOverPanel/VBoxContainer/GameOverLabel
 @onready var new_game_button = $MainContainer/CenterContainer/GameOverPanel/VBoxContainer/NewGameButton
+@onready var rules_button = $MainContainer/RulesButton
 
 func _ready():
 	new_game_button.pressed.connect(get_parent().start_new_game)
 	game_over_panel.hide()
+	rules_button.pressed.connect(UIManager.show_rules_popup)
 
 func update_score(team_scores):
 	your_team_score_label.text = "Your Team: %s" % team_scores[0]
