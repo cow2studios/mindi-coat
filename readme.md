@@ -38,11 +38,11 @@ A modern digital version of the classic Indian card game **Mindi Coat (Dehla Pak
 ## 🚧 Roadmap
 
 ### MVP (Minimum Viable Version)
-- [ ] Card scene and logic system
-- [ ] Basic player hand and trick-taking
-- [ ] Trump suit handling
-- [ ] Scoring system
-- [ ] Mindi/Dehla capture rules
+- [x] Card scene and logic system
+- [x] Basic player hand and trick-taking
+- [x] Trump suit handling
+- [x] Scoring system
+- [x] Mindi/Dehla capture rules
 
 ### Post-MVP (Nice to Have)
 - [ ] AI opponent
