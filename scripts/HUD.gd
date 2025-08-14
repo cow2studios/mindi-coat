@@ -2,10 +2,10 @@
 extends CanvasLayer
 
 # --- Node references ---
-@onready var your_team_score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreBox/ScoreValues/YourTeamScoreLabel
-@onready var opponent_score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreBox/ScoreValues/OpponentScoreLabel
-@onready var hukum_value_label = $MainContainer/MarginContainer/VBoxContainer/HukumBox/HukumValueLabel
-@onready var lead_suit_value_label = $MainContainer/MarginContainer/VBoxContainer/LeadSuitBox/LeadSuitValueLabel
+@onready var your_team_score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues/YourTeamScoreLabel
+@onready var opponent_score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues/OpponentScoreLabel
+@onready var hukum_value_label = $MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox/HukumValueLabel
+@onready var lead_suit_value_label = $MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox/LeadSuitValueLabel
 
 # --- Game Over references ---
 @onready var game_over_panel = $MainContainer/CenterContainer/GameOverPanel
