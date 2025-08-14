@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://ch8j3861nha1f"]
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://b70r3famqbxox"]
 
 [ext_resource type="Script" uid="uid://bocxpoitxx87n" path="res://scripts/CardData.gd" id="1_mvtc7"]
 [ext_resource type="Texture2D" uid="uid://dm8tklm22oh15" path="res://assets/cards/card_hearts_05.png" id="2_tix83"]

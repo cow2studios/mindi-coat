@@ -13,11 +13,16 @@ config_version=5
 config/name="Mindi-Coat"
 run/main_scene="uid://crcrsavxxd1b2"
 config/features=PackedStringArray("4.4", "Mobile")
+boot_splash/image="uid://c4ukqevixiq0u"
 config/icon="res://icon.svg"
 
 [autoload]
 
 Deck="*res://scripts/deck.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [rendering]
 

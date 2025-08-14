@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://b35mfh74435xe"]
+[gd_scene load_steps=2 format=3 uid="uid://1dvsg02rklhu"]
 
 [ext_resource type="Script" uid="uid://buts6njc8trkt" path="res://scripts/CardResourceGenerator.gd" id="1_hjlan"]
 
-[node name="Node2D" type="Node2D"]
+[node name="cardResourceGenerator" type="Node"]
 script = ExtResource("1_hjlan")
