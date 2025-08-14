@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://phydaif8utxe" path="res://scripts/GameManager.gd" id="1_elqb8"]
 [ext_resource type="PackedScene" uid="uid://ttbscvnqnm0w" path="res://scenes/hud.tscn" id="2_rvslj"]
 
-[node name="Main" type="Node2D"]
+[node name="Game" type="Node2D"]
 script = ExtResource("1_elqb8")
 
 [node name="PlayerHandPos" type="Marker2D" parent="."]

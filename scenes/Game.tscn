@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://h3ihkwbweaaj"]
+
+[ext_resource type="Script" uid="uid://phydaif8utxe" path="res://scripts/GameManager.gd" id="1_qbsmt"]
+[ext_resource type="PackedScene" uid="uid://shgucd7l2skg" path="res://scenes/background.tscn" id="2_78awf"]
+[ext_resource type="PackedScene" uid="uid://ttbscvnqnm0w" path="res://scenes/hud.tscn" id="2_cpr0p"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_qbsmt")
+
+[node name="background" parent="." instance=ExtResource("2_78awf")]
+
+[node name="PlayerHandPos" type="Marker2D" parent="."]
+position = Vector2(576, 465)
+
+[node name="PlayAreaPos" type="Marker2D" parent="."]
+position = Vector2(576, 328)
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="HUD" parent="." instance=ExtResource("2_cpr0p")]
+offset = Vector2(0, 475)
+transform = Transform2D(1, 0, 0, 1, 0, 475)
