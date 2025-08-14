@@ -1,8 +1,8 @@
 # scripts/MainMenu.gd attached to MainMenu
-extends Control
+extends CenterContainer
 
-@onready var start_button = $CenterContainer/VBoxContainer/StartButton
-@onready var quit_button = $CenterContainer/VBoxContainer/QuitButton
+@onready var start_button = $VBoxContainer/StartButton
+@onready var quit_button = $VBoxContainer/QuitButton
 
 func _ready():
 	# Connect the button's "pressed" signal to our functions
@@ -11,7 +11,7 @@ func _ready():
 
 func _on_start_button_pressed():
 	# This function changes the current scene to the main game scene
-	get_tree().change_scene_to_file("res://scenes/Main.tscn")
+	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
 func _on_quit_button_pressed():
 	# This function closes the application

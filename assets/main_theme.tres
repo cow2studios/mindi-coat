@@ -1,6 +1,12 @@
-[gd_resource type="Theme" load_steps=11 format=3 uid="uid://b8hvkks1jfjh1"]
+[gd_resource type="Theme" load_steps=21 format=3 uid="uid://b8hvkks1jfjh1"]
 
 [ext_resource type="FontFile" uid="uid://dvekxnjagew2e" path="res://assets/font/Merriweather.ttf" id="1_d80jv"]
+[ext_resource type="Texture2D" uid="uid://bt76m77qcbtj0" path="res://assets/ui/png/Blue/Default/button_square_gradient.png" id="2_2jsj3"]
+[ext_resource type="Texture2D" uid="uid://c52014wsedxgw" path="res://assets/ui/png/Blue/Default/button_square_gloss.png" id="3_2jsj3"]
+[ext_resource type="Texture2D" uid="uid://hb1vat7vrp7c" path="res://assets/ui/png/Blue/Default/button_square_flat.png" id="4_2jsj3"]
+[ext_resource type="Texture2D" uid="uid://cmti7y3qpftve" path="res://assets/ui/png/Red/Default/button_rectangle_gradient.png" id="5_2jsj3"]
+[ext_resource type="Texture2D" uid="uid://c57wlymbqowqp" path="res://assets/ui/png/Red/Default/button_rectangle_gloss.png" id="6_2est8"]
+[ext_resource type="Texture2D" uid="uid://n0nogrqxs5a" path="res://assets/ui/png/Red/Default/button_rectangle_flat.png" id="7_7ojh6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xgdp2"]
 content_margin_left = 4.0
@@ -35,46 +41,18 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0arac"]
-bg_color = Color(0.473838, 0.967742, 0.488629, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7ojh6"]
+texture = ExtResource("2_2jsj3")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_611f8"]
-bg_color = Color(0.341592, 0.797147, 0.361332, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0arac"]
+texture = ExtResource("3_2jsj3")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pefyd"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.231876, 0.535737, 0.243401, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
-corner_detail = 5
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2jsj3"]
+texture = ExtResource("4_2jsj3")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jsj3"]
 bg_color = Color(0.101961, 0.101961, 0.101961, 1)
@@ -93,6 +71,28 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ojh6"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 0.365, 0.365, 1)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_detail = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6f8b1"]
+texture = ExtResource("5_2jsj3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pl0ij"]
+texture = ExtResource("6_2est8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2est8"]
+texture = ExtResource("7_7ojh6")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2est8"]
 content_margin_left = 4.0
@@ -129,9 +129,9 @@ Button/font_sizes/font_size = 24
 Button/fonts/font = ExtResource("1_d80jv")
 Button/styles/disabled = SubResource("StyleBoxFlat_xgdp2")
 Button/styles/focus = SubResource("StyleBoxFlat_d80jv")
-Button/styles/hover = SubResource("StyleBoxFlat_0arac")
-Button/styles/normal = SubResource("StyleBoxFlat_611f8")
-Button/styles/pressed = SubResource("StyleBoxFlat_pefyd")
+Button/styles/hover = SubResource("StyleBoxTexture_7ojh6")
+Button/styles/normal = SubResource("StyleBoxTexture_0arac")
+Button/styles/pressed = SubResource("StyleBoxTexture_2jsj3")
 InfoPanel/base_type = &"PanelContainer"
 InfoPanel/styles/panel = SubResource("StyleBoxFlat_2jsj3")
 Label/colors/MutedLabel = Color(0, 0, 0, 1)
@@ -147,6 +147,31 @@ Label/font_sizes/font_size = 20
 Label/fonts/font = ExtResource("1_d80jv")
 Label/styles/normal = SubResource("StyleBoxEmpty_xgdp2")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_upuy7")
+QuitButton/base_type = &"Button"
+QuitButton/colors/font_color = Color(1, 1, 1, 1)
+QuitButton/colors/font_disabled_color = Color(0.87451, 0.87451, 0.87451, 0.501961)
+QuitButton/colors/font_focus_color = Color(0.94902, 0.94902, 0.94902, 1)
+QuitButton/colors/font_hover_color = Color(0.94902, 0.94902, 0.94902, 1)
+QuitButton/colors/font_hover_pressed_color = Color(0.94902, 0.94902, 0.94902, 1)
+QuitButton/colors/font_outline_color = Color(1, 1, 1, 1)
+QuitButton/colors/font_pressed_color = Color(1, 1, 1, 1)
+QuitButton/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+QuitButton/colors/icon_focus_color = Color(1, 1, 1, 1)
+QuitButton/colors/icon_hover_color = Color(1, 1, 1, 1)
+QuitButton/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+QuitButton/colors/icon_normal_color = Color(1, 1, 1, 1)
+QuitButton/colors/icon_pressed_color = Color(1, 1, 1, 1)
+QuitButton/constants/align_to_largest_stylebox = 0
+QuitButton/constants/h_separation = 0
+QuitButton/constants/icon_max_width = 0
+QuitButton/constants/outline_size = 0
+QuitButton/font_sizes/font_size = 24
+QuitButton/fonts/font = ExtResource("1_d80jv")
+QuitButton/styles/disabled = SubResource("StyleBoxFlat_7ojh6")
+QuitButton/styles/focus = SubResource("StyleBoxFlat_7ojh6")
+QuitButton/styles/hover = SubResource("StyleBoxTexture_6f8b1")
+QuitButton/styles/normal = SubResource("StyleBoxTexture_pl0ij")
+QuitButton/styles/pressed = SubResource("StyleBoxTexture_2est8")
 StartQuit/base_type = &"Button"
 StartQuit/colors/font_color = Color(0, 0, 0, 1)
 StartQuit/colors/font_disabled_color = Color(0, 0, 0, 1)
