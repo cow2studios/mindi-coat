@@ -45,7 +45,7 @@ A modern digital version of the classic Indian card game **Mindi Coat (Dehla Pak
 - [x] Mindi/Dehla capture rules
 
 ### Post-MVP (Nice to Have)
-- [ ] AI opponent
+- [x] AI opponent
 - [ ] Local multiplayer
 - [ ] Online multiplayer (stretch goal)
 
