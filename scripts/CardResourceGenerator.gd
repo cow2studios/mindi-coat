@@ -1,4 +1,3 @@
-# The NEW generator script, to create the master list
 @tool
 extends Node
 

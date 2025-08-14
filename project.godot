@@ -19,9 +19,12 @@ config/icon="res://icon.svg"
 [autoload]
 
 Deck="*res://scripts/deck.gd"
+UIManager="*res://scripts/UIManager.gd"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 
 [rendering]

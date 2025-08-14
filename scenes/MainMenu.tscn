@@ -51,8 +51,13 @@ label_settings = SubResource("LabelSettings_826wr")
 layout_mode = 2
 text = "Start Game"
 
+[node name="RulesButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Rules"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 47)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 theme_type_variation = &"QuitButton"
 text = "Quit Game"
