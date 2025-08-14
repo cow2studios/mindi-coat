@@ -27,12 +27,64 @@ theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="ScoreLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer"]
+[node name="ScoreBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_type_variation = &"InfoPanel"
 
-[node name="HukumLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer"]
+[node name="ScoreBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MindiLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox"]
+layout_mode = 2
+text = "Mindi 
+Captured  "
+
+[node name="ScoreValues" type="VBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="YourTeamScoreLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues"]
+layout_mode = 2
+text = "Your Team: 0"
+
+[node name="OpponentScoreLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues"]
+layout_mode = 2
+text = "Opponents: 0"
+
+[node name="HukumBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"InfoPanel"
+
+[node name="HukumBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Hukum" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox"]
+layout_mode = 2
+text = "Hukum:    "
+
+[node name="HukumValueLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox"]
+layout_mode = 2
+text = "Not Set"
+
+[node name="LeadSuitBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"InfoPanel"
+
+[node name="LeadSuitBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LeadSuit" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
+layout_mode = 2
+text = "Lead Suit: "
+
+[node name="LeadSuitValueLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
+layout_mode = 2
+text = "None"
 
 [node name="CenterContainer" type="CenterContainer" parent="MainContainer"]
 layout_mode = 1

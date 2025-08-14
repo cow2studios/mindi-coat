@@ -1,26 +1,36 @@
 # scripts/HUD.gd attached to hud
 extends CanvasLayer
 
-## NODE PATHS ##
-@onready var score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreLabel
-@onready var hukum_label = $MainContainer/MarginContainer/VBoxContainer/HukumLabel
+# --- Node references ---
+@onready var your_team_score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues/YourTeamScoreLabel
+@onready var opponent_score_label = $MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues/OpponentScoreLabel
+@onready var hukum_value_label = $MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox/HukumValueLabel
+@onready var lead_suit_value_label = $MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox/LeadSuitValueLabel
+
+# --- Game Over references ---
 @onready var game_over_panel = $MainContainer/CenterContainer/GameOverPanel
 @onready var game_over_label = $MainContainer/CenterContainer/GameOverPanel/VBoxContainer/GameOverLabel
 @onready var new_game_button = $MainContainer/CenterContainer/GameOverPanel/VBoxContainer/NewGameButton
 
 func _ready():
-	# Connect this button's "pressed" signal back to the GameManager
 	new_game_button.pressed.connect(get_parent().start_new_game)
 	game_over_panel.hide()
 
 func update_score(team_scores):
-	score_label.text = "Mindi Captured -> Your Team: %s | Opponents: %s" % [team_scores[0], team_scores[1]]
+	your_team_score_label.text = "Your Team: %s" % team_scores[0]
+	opponent_score_label.text = "Opponents: %s" % team_scores[1]
 
 func update_hukum(suit_name):
 	if suit_name == "None":
-		hukum_label.text = "Hukum: Not Set"
+		hukum_value_label.text = "Not Set"
 	else:
-		hukum_label.text = "Hukum: " + suit_name
+		hukum_value_label.text = suit_name.capitalize()
+
+func update_lead_suit(suit_name):
+	if suit_name == "None":
+		lead_suit_value_label.text = "None"
+	else:
+		lead_suit_value_label.text = suit_name.capitalize()
 
 func show_game_over(message):
 	game_over_label.text = message

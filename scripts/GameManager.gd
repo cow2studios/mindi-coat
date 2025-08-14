@@ -1,10 +1,11 @@
 # scripts/GameManager.gd attached to Main
 extends Node2D
 
-## NEW SIGNALS ##
+## SIGNALS ##
 signal score_updated(team_scores)
 signal hukum_updated(suit_name)
 signal game_over(message)
+signal lead_suit_updated(suit_name)
 
 const CardScene = preload("res://scenes/Card.tscn")
 
@@ -12,7 +13,7 @@ const CardScene = preload("res://scenes/Card.tscn")
 @onready var player_hand_pos = $PlayerHandPos
 @onready var play_area_pos = $PlayAreaPos
 @onready var timer = $Timer
-@onready var hud = $HUD ## NEW: A reference to the HUD scene instance
+@onready var hud = $HUD
 
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
@@ -27,16 +28,16 @@ var trick_leader_index = 0
 var hukum_suit: CardData.Suit
 var is_hukum_set = false
 var team_tricks_captured: Array = [[], []]
-var team_mindi_count = [0, 0] ## NEW: Variable to track the score
+var team_mindi_count = [0, 0]
 
 func _ready():
 	timer.timeout.connect(on_timer_timeout)
 	
-	## NEW: Connect this manager's signals to the HUD's functions ##
 	score_updated.connect(hud.update_score)
 	hukum_updated.connect(hud.update_hukum)
 	game_over.connect(hud.show_game_over)
-	
+	lead_suit_updated.connect(hud.update_lead_suit)
+
 	start_new_game()
 
 func start_new_game():
@@ -50,12 +51,13 @@ func start_new_game():
 	player_who_played.clear()
 	is_hukum_set = false
 	team_tricks_captured = [[], []]
-	team_mindi_count = [0, 0] ## UPDATED: Reset score
+	team_mindi_count = [0, 0]
 	
-	## NEW: Reset the HUD for a new game ##
+	# --- Reset the HUD for a new game ---
 	hud.game_over_panel.hide()
 	emit_signal("score_updated", team_mindi_count)
 	emit_signal("hukum_updated", "None")
+	emit_signal("lead_suit_updated", "None") ## NEW: Reset lead suit display ##
 	
 	for node in get_tree().get_nodes_in_group("cards"):
 		node.queue_free()
@@ -77,6 +79,10 @@ func play_card(card_data: CardData, player_index: int):
 	cards_on_table.append(card_data)
 	player_who_played.append(player_index)
 	
+	## NEW: Emit the lead suit when the first card is played ##
+	if cards_on_table.size() == 1:
+		emit_signal("lead_suit_updated", CardData.Suit.keys()[card_data.suit])
+	
 	if not is_hukum_set and cards_on_table.size() > 1:
 		var lead_suit = cards_on_table[0].suit
 		if card_data.suit != lead_suit:
@@ -84,7 +90,7 @@ func play_card(card_data: CardData, player_index: int):
 			hukum_suit = card_data.suit
 			var suit_name = CardData.Suit.keys()[hukum_suit]
 			print("--- HUKUM SET TO: %s ---" % suit_name)
-			emit_signal("hukum_updated", suit_name) ## NEW ##
+			emit_signal("hukum_updated", suit_name)
 	
 	display_card_on_table(card_data, player_index)
 	
@@ -115,14 +121,14 @@ func evaluate_trick():
 	self.trick_leader_index = player_who_played[winner_index_in_trick]
 	var winner_team = trick_leader_index % 2
 	
-	## NEW: Scoring Logic ##
 	for card in cards_on_table:
-		if card.rank == CardData.Rank._10: # If it's a Mindi (10)
+		if card.rank == CardData.Rank._10:
 			team_mindi_count[winner_team] += 1
-	emit_signal("score_updated", team_mindi_count) # Update the HUD
+	emit_signal("score_updated", team_mindi_count)
 	
 	team_tricks_captured[winner_team].append_array(cards_on_table)
 	print("Trick won by Player %s" % trick_leader_index)
+	emit_signal("lead_suit_updated", "None") ## NEW: Clear the lead suit display ##
 	
 	cards_on_table.clear()
 	player_who_played.clear()
@@ -130,27 +136,24 @@ func evaluate_trick():
 		node.queue_free()
 	
 	if players_hands[0].is_empty():
-		end_round() ## UPDATED ##
+		end_round()
 	else:
 		start_next_trick()
 
-## NEW FUNCTION: Handles the end of a round ##
 func end_round():
 	current_state = GameState.WAITING
 	var final_message = ""
-	# Determine winner
 	if team_mindi_count[0] > team_mindi_count[1]:
 		final_message = "Your Team Wins!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
 		if team_mindi_count[1] == 0: final_message += "\nCOAT!"
 	elif team_mindi_count[1] > team_mindi_count[0]:
 		final_message = "Opponents Win!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
 		if team_mindi_count[0] == 0: final_message += "\nCOAT!"
-	else: # A 2-2 draw
+	else:
 		final_message = "It's a Draw!\nScore: 2 - 2"
 	
 	emit_signal("game_over", final_message)
 
-# --- (The rest of the script is unchanged) ---
 func _on_card_clicked(card_data: CardData):
 	if current_state != GameState.PLAYER_TURN: return
 	var legal_moves = get_legal_moves(0)

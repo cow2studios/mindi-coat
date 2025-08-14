@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://b8hvkks1jfjh1"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://b8hvkks1jfjh1"]
 
 [ext_resource type="FontFile" uid="uid://dvekxnjagew2e" path="res://assets/font/Merriweather.ttf" id="1_d80jv"]
 
@@ -76,6 +76,14 @@ corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 corner_detail = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jsj3"]
+bg_color = Color(0.101961, 0.101961, 0.101961, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.666667, 0.666667, 0.666667, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xgdp2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_upuy7"]
@@ -111,6 +119,8 @@ Button/styles/focus = SubResource("StyleBoxFlat_d80jv")
 Button/styles/hover = SubResource("StyleBoxFlat_0arac")
 Button/styles/normal = SubResource("StyleBoxFlat_611f8")
 Button/styles/pressed = SubResource("StyleBoxFlat_pefyd")
+InfoPanel/base_type = &"PanelContainer"
+InfoPanel/styles/panel = SubResource("StyleBoxFlat_2jsj3")
 Label/colors/MutedLabel = Color(0, 0, 0, 1)
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
