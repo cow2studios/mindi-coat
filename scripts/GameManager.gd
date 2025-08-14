@@ -136,6 +136,7 @@ func evaluate_trick():
 		node.queue_free()
 	
 	if players_hands[0].is_empty():
+		print("DEBUG: Hand is empty! Calling end_round().")
 		end_round()
 	else:
 		start_next_trick()

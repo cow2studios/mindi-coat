@@ -1,18 +1,11 @@
-# scripts/deck.gd attached to deck
 extends Node2D
 
-var card_resources: Array[CardData] = []
+const DeckListResource = preload("res://assets/deck_list.tres")
 
 func _ready():
-	var data_path = "res://assets/card_data/"
-	var dir = DirAccess.open(data_path)
-	if dir:
-		for file_name in dir.get_files():
-			if file_name.ends_with(".tres"):
-				card_resources.append(load(data_path + file_name))
-	print("Deck loaded with %s cards." % card_resources.size())
+	print("Deck loaded with %s cards." % DeckListResource.cards.size())
 
 func get_shuffled_deck() -> Array[CardData]:
-	var new_deck = card_resources.duplicate()
+	var new_deck = DeckListResource.cards.duplicate()
 	new_deck.shuffle()
 	return new_deck

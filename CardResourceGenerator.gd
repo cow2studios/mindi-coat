@@ -1,6 +1,6 @@
-# The NEW generator script, to create the master list
+# scripts/CardResourceGenerator.gd (NEW VERSION)
 @tool
-extends Node
+extends Node2D
 
 @export var generate_deck_resource: bool = false:
 	set(value):
@@ -15,14 +15,14 @@ func _generate_deck_list():
 	if not dir:
 		print("ERROR: Card data directory not found.")
 		return
-
+	
 	var deck_list = DeckList.new()
-
+	
 	for file_name in dir.get_files():
 		if file_name.ends_with(".tres"):
 			var card_data = load(SOURCE_CARD_DATA_PATH + file_name)
 			deck_list.cards.append(card_data)
-
+	
 	if deck_list.cards.size() == 52:
 		var save_path = OUTPUT_PATH + "deck_list.tres"
 		ResourceSaver.save(deck_list, save_path)
