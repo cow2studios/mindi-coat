@@ -1,9 +1,11 @@
-# Loads and plays all sound effects from a central place.
+# scripts/SoundManager.gd (NEW, SIMPLER VERSION)
 extends Node
 
 const NUM_PLAYERS = 8 # The number of sounds that can play at once
 
-var sfx_library = {}
+# Preload the master sound library resource
+const SoundLibraryResource = preload("res://assets/sound_library.tres")
+
 var players = []
 var rng = RandomNumberGenerator.new()
 
@@ -14,29 +16,14 @@ func _ready():
 		add_child(p)
 		players.append(p)
 	
-	# Load sounds from all necessary directories
-	_load_sfx_from_dir("res://assets/audio/")
-	_load_sfx_from_dir("res://assets/ui/sounds/")
-	
-	print("SoundManager loaded %s sound effects." % sfx_library.size())
-
-func _load_sfx_from_dir(path):
-	var dir = DirAccess.open(path)
-	if dir:
-		for file_name in dir.get_files():
-			if file_name.ends_with(".ogg"):
-				var sound_name = file_name.trim_suffix(".ogg")
-				if sfx_library.has(sound_name):
-					print("SoundManager Warning: Duplicate sound name found - ", sound_name)
-				sfx_library[sound_name] = load(path + file_name)
-	else:
-		print("SoundManager Error: Directory not found - ", path)
+	print("SoundManager ready. Loaded %s sounds from library." % SoundLibraryResource.sfx.size())
 
 func play(sound_name):
 	var sound_variations = []
-	for key in sfx_library:
+	# Find variations in our preloaded library
+	for key in SoundLibraryResource.sfx:
 		if key.begins_with(sound_name):
-			sound_variations.append(sfx_library[key])
+			sound_variations.append(SoundLibraryResource.sfx[key])
 
 	if sound_variations.is_empty():
 		print("SoundManager Error: Sound not found - ", sound_name)

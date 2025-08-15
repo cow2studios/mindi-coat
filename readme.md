@@ -73,7 +73,25 @@ res://
 
 ## 📸 Screenshots
 
-_(I will keep adding screenshots as per the development progresses)_
+Main Menu
+![Main Menu](screenshots/menu.png)
+
+Game
+![Game](screenshots/game.png)
+
+---
+
+## How to Run
+
+1. Clone the Repository
+   ```bash
+   git clone https://github.com/cow2studios/mindi-coat.git
+   ```
+
+2. Create Master resources (if sound_library.tres and deck_list.tres doesn't exist)
+   Run the SoundGenerator.gd and cardResourceGenerator.gd by attaching them to a temporary node
+
+3. Open the godot engine and in Project -> Project Settings, set MainMenu as the Run node.
 
 ---
 
