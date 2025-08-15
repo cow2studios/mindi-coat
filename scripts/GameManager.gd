@@ -182,6 +182,7 @@ func do_ai_turn():
 	else: print("ERROR: AI has no legal moves")
 
 func display_all_hands():
+	# Clear old hand visuals first
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
 	
@@ -189,13 +190,17 @@ func display_all_hands():
 	
 	for i in range(4):
 		var player_index = i
+
 		var hand = players_hands[player_index]
 		var is_human = (player_index == 0)
+		
+		# This will crash if the variable is not recognized.
 		var pos = hand_positions[player_index].position
+		
 		var card_spacing = 30
-		var card_rotation_degrees = 0 # RENAMED to fix warning
+		var card_rotation_degrees = 0
 		if i == 1 or i == 3: # Left and Right opponents
-			# card_rotation_degrees = 90 # Commented out as per user request
+			card_rotation_degrees = 90
 			pass
 		
 		var total_size = (hand.size() - 1) * card_spacing
@@ -205,17 +210,23 @@ func display_all_hands():
 			var card_data = hand[j]
 			var card_instance = CardScene.instantiate()
 			add_child(card_instance)
+			
 			var card_pos = Vector2.ZERO
-			# This logic now correctly lays out side hands vertically
 			if i == 1 or i == 3:
 				card_pos.y = start_offset + (j * card_spacing)
 			else:
 				card_pos.x = start_offset + (j * card_spacing)
+
 			card_instance.position = pos + card_pos
 			card_instance.rotation_degrees = card_rotation_degrees
 			card_instance.display_card(card_data, is_human)
-			if is_human: card_instance.card_clicked.connect(_on_card_clicked)
-			card_instance.add_to_group("player_hand_cards"); card_instance.add_to_group("cards")
+			
+			if is_human:
+				card_instance.card_clicked.connect(_on_card_clicked)
+			
+			card_instance.add_to_group("player_hand_cards")
+			card_instance.add_to_group("cards")
+
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
