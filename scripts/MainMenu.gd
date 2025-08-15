@@ -12,9 +12,10 @@ func _ready():
 	rules_button.pressed.connect(UIManager.show_rules_popup)
 
 func _on_start_button_pressed():
-	# This function changes the current scene to the main game scene
+	SoundManager.play("click")
 	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
 func _on_quit_button_pressed():
-	# This function closes the application
+	SoundManager.play("click")
+	await get_tree().create_timer(0.3).timeout
 	get_tree().quit()

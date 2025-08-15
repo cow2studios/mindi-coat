@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 Deck="*res://scripts/deck.gd"
 UIManager="*res://scripts/UIManager.gd"
+SoundManager="*res://scripts/SoundManager.gd"
 
 [display]
 
