@@ -1,4 +1,5 @@
-extends Node2D
+# Loads the master deck list and provides shuffled decks.
+extends Node
 
 const DeckListResource = preload("res://assets/deck_list.tres")
 

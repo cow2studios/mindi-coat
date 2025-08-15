@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq0mfbnrbvsio"]
+
+[ext_resource type="Script" uid="uid://ceqlhjuxaphmr" path="res://scripts/SoundManager.gd" id="1_rupev"]
+
+[node name="SoundManager" type="Node"]
+script = ExtResource("1_rupev")

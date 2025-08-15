@@ -1,18 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://kph56udacacy"]
+[gd_scene load_steps=4 format=3 uid="uid://kph56udacacy"]
 
-[ext_resource type="Script" uid="uid://phydaif8utxe" path="res://scripts/GameManager.gd" id="1_elqb8"]
-[ext_resource type="PackedScene" uid="uid://ttbscvnqnm0w" path="res://scenes/hud.tscn" id="2_rvslj"]
+[ext_resource type="PackedScene" uid="uid://shgucd7l2skg" path="res://scenes/background.tscn" id="1_elqb8"]
+[ext_resource type="Script" uid="uid://phydaif8utxe" path="res://scripts/GameManager.gd" id="1_rvslj"]
+[ext_resource type="PackedScene" uid="uid://ttbscvnqnm0w" path="res://scenes/hud.tscn" id="3_rarhs"]
 
-[node name="Game" type="Node2D"]
-script = ExtResource("1_elqb8")
+[node name="Main" type="Node2D"]
+script = ExtResource("1_rvslj")
 
-[node name="PlayerHandPos" type="Marker2D" parent="."]
-position = Vector2(576, 550)
+[node name="background" parent="." instance=ExtResource("1_elqb8")]
 
 [node name="PlayAreaPos" type="Marker2D" parent="."]
-position = Vector2(576, 324)
+position = Vector2(960, 540)
+
+[node name="PlayerHandPos" type="Marker2D" parent="."]
+position = Vector2(960, 700)
+
+[node name="PartnerHandPos" type="Marker2D" parent="."]
+position = Vector2(960, 380)
+
+[node name="LeftOpponentPos" type="Marker2D" parent="."]
+position = Vector2(660, 540)
+
+[node name="RightOpponentPos" type="Marker2D" parent="."]
+position = Vector2(1260, 540)
+
+[node name="HUD" parent="." instance=ExtResource("3_rarhs")]
 
 [node name="Timer" type="Timer" parent="."]
-one_shot = true
-
-[node name="HUD" parent="." instance=ExtResource("2_rvslj")]

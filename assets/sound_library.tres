@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="SoundLibrary" load_steps=31 format=3 uid="uid://cf4husjrx26s2"]
+
+[ext_resource type="Script" uid="uid://dhx7ge6nvv05a" path="res://scripts/SoundLibrary.gd" id="1_nx1fn"]
+[ext_resource type="AudioStream" uid="uid://dh28dkn364gjt" path="res://assets/audio/card-fan-1.ogg" id="2_ubros"]
+[ext_resource type="AudioStream" uid="uid://b13sppevlpowj" path="res://assets/audio/card-fan-2.ogg" id="3_2ggyi"]
+[ext_resource type="AudioStream" uid="uid://c52ul2khha07c" path="res://assets/audio/card-place-1.ogg" id="4_hjgy4"]
+[ext_resource type="AudioStream" uid="uid://c5nc18tlo55t5" path="res://assets/audio/card-place-2.ogg" id="5_dl3tv"]
+[ext_resource type="AudioStream" uid="uid://c55fbabmpf6g" path="res://assets/audio/card-place-3.ogg" id="6_5lw2p"]
+[ext_resource type="AudioStream" uid="uid://dwh2ovpb1x8qj" path="res://assets/audio/card-place-4.ogg" id="7_mr8e3"]
+[ext_resource type="AudioStream" uid="uid://jy27uel2dobv" path="res://assets/audio/card-shove-1.ogg" id="8_0cg3r"]
+[ext_resource type="AudioStream" uid="uid://bqr4o0kkm5sd1" path="res://assets/audio/card-shove-2.ogg" id="9_qu13t"]
+[ext_resource type="AudioStream" uid="uid://2xv2xwrqpk3h" path="res://assets/audio/card-shove-3.ogg" id="10_dh6bc"]
+[ext_resource type="AudioStream" uid="uid://cok6nk4fd2e0l" path="res://assets/audio/card-shove-4.ogg" id="11_rc17u"]
+[ext_resource type="AudioStream" uid="uid://py8btxri4kpg" path="res://assets/audio/card-shuffle.ogg" id="12_irofn"]
+[ext_resource type="AudioStream" uid="uid://duum6uh8i1j5g" path="res://assets/audio/card-slide-1.ogg" id="13_skju3"]
+[ext_resource type="AudioStream" uid="uid://dypoyccl35s6a" path="res://assets/audio/card-slide-2.ogg" id="14_hgr84"]
+[ext_resource type="AudioStream" uid="uid://ctyaryafpvtmw" path="res://assets/audio/card-slide-3.ogg" id="15_vgxbd"]
+[ext_resource type="AudioStream" uid="uid://dun1atu4noro5" path="res://assets/audio/card-slide-4.ogg" id="16_34cy2"]
+[ext_resource type="AudioStream" uid="uid://6p1h513uha3p" path="res://assets/audio/card-slide-5.ogg" id="17_qh62a"]
+[ext_resource type="AudioStream" uid="uid://p3tr15e6qe1h" path="res://assets/audio/card-slide-6.ogg" id="18_gmngx"]
+[ext_resource type="AudioStream" uid="uid://drytbc57hnh1s" path="res://assets/audio/card-slide-7.ogg" id="19_23kjj"]
+[ext_resource type="AudioStream" uid="uid://bjfq15twjg2e5" path="res://assets/audio/card-slide-8.ogg" id="20_yw8kd"]
+[ext_resource type="AudioStream" uid="uid://f522x2vsdsqe" path="res://assets/audio/cards-pack-open-1.ogg" id="21_6lq4e"]
+[ext_resource type="AudioStream" uid="uid://ctflcjrg0ts6i" path="res://assets/audio/cards-pack-open-2.ogg" id="22_ur0ld"]
+[ext_resource type="AudioStream" uid="uid://cuc6igtkpkciw" path="res://assets/audio/cards-pack-take-out-1.ogg" id="23_8782t"]
+[ext_resource type="AudioStream" uid="uid://bku7vbc18v7vs" path="res://assets/audio/cards-pack-take-out-2.ogg" id="24_iw3eb"]
+[ext_resource type="AudioStream" uid="uid://or6x7b5ifwdk" path="res://assets/ui/sounds/click-a.ogg" id="25_hh4f3"]
+[ext_resource type="AudioStream" uid="uid://cmnfd80xwgc3b" path="res://assets/ui/sounds/click-b.ogg" id="26_fjw8h"]
+[ext_resource type="AudioStream" uid="uid://bg2cda2p6jhqk" path="res://assets/ui/sounds/switch-a.ogg" id="27_vqk8w"]
+[ext_resource type="AudioStream" uid="uid://cuvg4jr38fvbf" path="res://assets/ui/sounds/switch-b.ogg" id="28_32k0q"]
+[ext_resource type="AudioStream" uid="uid://boekswh4pbfpb" path="res://assets/ui/sounds/tap-a.ogg" id="29_qp0b4"]
+[ext_resource type="AudioStream" uid="uid://b63i6ls7s8bh6" path="res://assets/ui/sounds/tap-b.ogg" id="30_lk6jr"]
+
+[resource]
+script = ExtResource("1_nx1fn")
+sfx = {
+"card-fan-1": ExtResource("2_ubros"),
+"card-fan-2": ExtResource("3_2ggyi"),
+"card-place-1": ExtResource("4_hjgy4"),
+"card-place-2": ExtResource("5_dl3tv"),
+"card-place-3": ExtResource("6_5lw2p"),
+"card-place-4": ExtResource("7_mr8e3"),
+"card-shove-1": ExtResource("8_0cg3r"),
+"card-shove-2": ExtResource("9_qu13t"),
+"card-shove-3": ExtResource("10_dh6bc"),
+"card-shove-4": ExtResource("11_rc17u"),
+"card-shuffle": ExtResource("12_irofn"),
+"card-slide-1": ExtResource("13_skju3"),
+"card-slide-2": ExtResource("14_hgr84"),
+"card-slide-3": ExtResource("15_vgxbd"),
+"card-slide-4": ExtResource("16_34cy2"),
+"card-slide-5": ExtResource("17_qh62a"),
+"card-slide-6": ExtResource("18_gmngx"),
+"card-slide-7": ExtResource("19_23kjj"),
+"card-slide-8": ExtResource("20_yw8kd"),
+"cards-pack-open-1": ExtResource("21_6lq4e"),
+"cards-pack-open-2": ExtResource("22_ur0ld"),
+"cards-pack-take-out-1": ExtResource("23_8782t"),
+"cards-pack-take-out-2": ExtResource("24_iw3eb"),
+"click-a": ExtResource("25_hh4f3"),
+"click-b": ExtResource("26_fjw8h"),
+"switch-a": ExtResource("27_vqk8w"),
+"switch-b": ExtResource("28_32k0q"),
+"tap-a": ExtResource("29_qp0b4"),
+"tap-b": ExtResource("30_lk6jr")
+}

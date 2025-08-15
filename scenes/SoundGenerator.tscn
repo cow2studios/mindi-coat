@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3vo4luybr64y"]
+
+[ext_resource type="Script" uid="uid://b32fh70hrf2km" path="res://scripts/SoundGenerator.gd" id="1_njl40"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_njl40")
