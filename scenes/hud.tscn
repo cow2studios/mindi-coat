@@ -18,8 +18,8 @@ theme = ExtResource("2_oo0fn")
 
 [node name="MarginContainer" type="MarginContainer" parent="MainContainer"]
 layout_mode = 0
-offset_right = 41.0
-offset_bottom = 90.0
+offset_right = 496.0
+offset_bottom = 266.0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
@@ -31,7 +31,7 @@ theme_override_constants/separation = 0
 
 [node name="ScoreBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_type_variation = &"InfoPanel"
+theme_type_variation = &"HUDPanel"
 
 [node name="ScoreBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel"]
 layout_mode = 2
@@ -56,7 +56,7 @@ text = "Opponents: 0"
 
 [node name="HukumBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_type_variation = &"InfoPanel"
+theme_type_variation = &"HUDPanel"
 
 [node name="HukumBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel"]
 layout_mode = 2
@@ -72,7 +72,7 @@ text = "Not Set"
 
 [node name="LeadSuitBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_type_variation = &"InfoPanel"
+theme_type_variation = &"HUDPanel"
 
 [node name="LeadSuitBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel"]
 layout_mode = 2

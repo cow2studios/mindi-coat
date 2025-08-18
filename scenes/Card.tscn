@@ -4,16 +4,15 @@
 [ext_resource type="Texture2D" uid="uid://c7jxgn5512ebr" path="res://assets/cards/back01.png" id="2_tgmmg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tgmmg"]
-size = Vector2(106, 154)
+size = Vector2(353.333, 513.333)
 
 [node name="Card" type="Area2D"]
+scale = Vector2(0.3, 0.3)
 script = ExtResource("1_yiag5")
 
 [node name="CardSprite" type="Sprite2D" parent="."]
-scale = Vector2(0.3, 0.3)
 
 [node name="CardBack" type="Sprite2D" parent="."]
-scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_tgmmg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
