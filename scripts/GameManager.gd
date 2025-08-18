@@ -8,6 +8,7 @@ signal game_over(message)
 signal lead_suit_updated(suit_name)
 
 const CardScene = preload("res://scenes/Card.tscn")
+const CARD_SCALE = 0.3
 
 @onready var player_hand_pos = $PlayerHandPos
 @onready var partner_hand_pos = $PartnerHandPos
@@ -190,18 +191,15 @@ func display_all_hands():
 	
 	for i in range(4):
 		var player_index = i
-
 		var hand = players_hands[player_index]
 		var is_human = (player_index == 0)
-		
-		# This will crash if the variable is not recognized.
 		var pos = hand_positions[player_index].position
 		
-		var card_spacing = 30
+		# UPDATED: Increased spacing for larger cards
+		var card_spacing = 45
 		var card_rotation_degrees = 0
 		if i == 1 or i == 3: # Left and Right opponents
 			card_rotation_degrees = 90
-			pass
 		
 		var total_size = (hand.size() - 1) * card_spacing
 		var start_offset = - total_size / 2.0
@@ -209,27 +207,28 @@ func display_all_hands():
 		for j in range(hand.size()):
 			var card_data = hand[j]
 			var card_instance = CardScene.instantiate()
-			add_child(card_instance)
+			card_instance.scale = Vector2(CARD_SCALE, CARD_SCALE)
 			
+			add_child(card_instance)
+
 			var card_pos = Vector2.ZERO
-			if i == 1 or i == 3:
+			if card_rotation_degrees == 90:
 				card_pos.y = start_offset + (j * card_spacing)
 			else:
 				card_pos.x = start_offset + (j * card_spacing)
-
 			card_instance.position = pos + card_pos
 			card_instance.rotation_degrees = card_rotation_degrees
 			card_instance.display_card(card_data, is_human)
-			
-			if is_human:
-				card_instance.card_clicked.connect(_on_card_clicked)
-			
+
+			if is_human: card_instance.card_clicked.connect(_on_card_clicked)
 			card_instance.add_to_group("player_hand_cards")
 			card_instance.add_to_group("cards")
 
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
+	card_instance.scale = Vector2(CARD_SCALE, CARD_SCALE)
+	
 	add_child(card_instance)
 	var offset = Vector2.ZERO
 	match player_index:
