@@ -8,6 +8,7 @@ signal game_over(message)
 signal lead_suit_updated(suit_name)
 
 const CardScene = preload("res://scenes/Card.tscn")
+const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 
 @onready var player_hand_pos = $PlayerHandPos
 @onready var partner_hand_pos = $PartnerHandPos
@@ -40,7 +41,9 @@ func _ready():
 	lead_suit_updated.connect(hud.update_lead_suit)
 	start_new_game()
 
+
 func start_new_game():
+	# --- Reset game variables ---
 	players_hands.clear()
 	for i in range(4):
 		var typed_hand: Array[CardData] = []
@@ -48,7 +51,7 @@ func start_new_game():
 
 	cards_on_table.clear(); player_who_played.clear()
 	is_hukum_set = false; team_tricks_captured = [[], []]; team_mindi_count = [0, 0]
-	
+
 	hud.game_over_panel.hide()
 	emit_signal("score_updated", team_mindi_count)
 	emit_signal("hukum_updated", "None")
@@ -56,8 +59,25 @@ func start_new_game():
 	
 	for node in get_tree().get_nodes_in_group("cards"):
 		node.queue_free()
+
+	# --- Play the Shuffle Animation ---
+	var shuffle_anim = ShuffleAnimationScene.instantiate()
+	add_child(shuffle_anim)
+	shuffle_anim.global_position = play_area_pos.position
 	
+	var anim_player = shuffle_anim.get_node("AnimationPlayer")
+	
+	# Play the sound and the animation
 	SoundManager.play("card-shuffle")
+	anim_player.play("shuffle")
+	
+	# Wait for the animation player's built-in "finished" signal
+	await anim_player.animation_finished
+	
+	# Clean up the animation scene now that it's done
+	shuffle_anim.queue_free()
+	
+	# --- Deal cards (This code now runs AFTER the animation is done) ---
 	var deck = Deck.get_shuffled_deck()
 	for i in range(13):
 		for player_index in range(4):
@@ -65,6 +85,7 @@ func start_new_game():
 	
 	display_all_hands()
 	
+	# --- Start the game ---
 	trick_leader_index = 0
 	start_next_trick()
 
