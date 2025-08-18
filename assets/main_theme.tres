@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=21 format=3 uid="uid://b8hvkks1jfjh1"]
+[gd_resource type="Theme" load_steps=22 format=3 uid="uid://b8hvkks1jfjh1"]
 
 [ext_resource type="FontFile" uid="uid://dvekxnjagew2e" path="res://assets/font/Merriweather.ttf" id="1_d80jv"]
 [ext_resource type="Texture2D" uid="uid://bt76m77qcbtj0" path="res://assets/ui/png/Blue/Default/button_square_gradient.png" id="2_2jsj3"]
@@ -53,6 +53,9 @@ texture_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2jsj3"]
 texture = ExtResource("4_2jsj3")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6f8b1"]
+bg_color = Color(0.101961, 0.101961, 0.101961, 0.733333)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jsj3"]
 bg_color = Color(0.101961, 0.101961, 0.101961, 1)
@@ -122,6 +125,8 @@ Button/styles/focus = SubResource("StyleBoxFlat_d80jv")
 Button/styles/hover = SubResource("StyleBoxTexture_7ojh6")
 Button/styles/normal = SubResource("StyleBoxTexture_0arac")
 Button/styles/pressed = SubResource("StyleBoxTexture_2jsj3")
+HUDPanel/base_type = &"PanelContainer"
+HUDPanel/styles/panel = SubResource("StyleBoxFlat_6f8b1")
 InfoPanel/base_type = &"PanelContainer"
 InfoPanel/styles/panel = SubResource("StyleBoxFlat_2jsj3")
 Label/colors/MutedLabel = Color(0, 0, 0, 1)
