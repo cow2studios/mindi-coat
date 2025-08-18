@@ -8,7 +8,6 @@ signal game_over(message)
 signal lead_suit_updated(suit_name)
 
 const CardScene = preload("res://scenes/Card.tscn")
-const CARD_SCALE = 0.3
 
 @onready var player_hand_pos = $PlayerHandPos
 @onready var partner_hand_pos = $PartnerHandPos
@@ -207,7 +206,6 @@ func display_all_hands():
 		for j in range(hand.size()):
 			var card_data = hand[j]
 			var card_instance = CardScene.instantiate()
-			card_instance.scale = Vector2(CARD_SCALE, CARD_SCALE)
 			
 			add_child(card_instance)
 
@@ -227,7 +225,6 @@ func display_all_hands():
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
-	card_instance.scale = Vector2(CARD_SCALE, CARD_SCALE)
 	
 	add_child(card_instance)
 	var offset = Vector2.ZERO
