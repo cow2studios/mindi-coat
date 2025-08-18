@@ -8,21 +8,22 @@
 script = ExtResource("1_rvslj")
 
 [node name="background" parent="." instance=ExtResource("1_elqb8")]
+scale = Vector2(0.78, 0.88)
 
 [node name="PlayAreaPos" type="Marker2D" parent="."]
 position = Vector2(960, 540)
 
 [node name="PlayerHandPos" type="Marker2D" parent="."]
-position = Vector2(960, 700)
+position = Vector2(960, 780)
 
 [node name="PartnerHandPos" type="Marker2D" parent="."]
-position = Vector2(960, 380)
+position = Vector2(960, 300)
 
 [node name="LeftOpponentPos" type="Marker2D" parent="."]
-position = Vector2(660, 540)
+position = Vector2(460, 540)
 
 [node name="RightOpponentPos" type="Marker2D" parent="."]
-position = Vector2(1260, 540)
+position = Vector2(1460, 540)
 
 [node name="HUD" parent="." instance=ExtResource("3_rarhs")]
 

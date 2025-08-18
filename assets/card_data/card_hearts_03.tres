@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://5mya51nkuahw"]
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://b3s3achpausqk"]
 
 [ext_resource type="Script" uid="uid://bocxpoitxx87n" path="res://scripts/CardData.gd" id="1_3a4hd"]
-[ext_resource type="Texture2D" uid="uid://t0188la48lut" path="res://assets/cards/card_hearts_03.png" id="2_b2of2"]
+[ext_resource type="Texture2D" uid="uid://d18wdwf0jeyr4" path="res://assets/cards/hearts_03.png" id="2_3a4hd"]
 
 [resource]
 script = ExtResource("1_3a4hd")
 suit = 2
 rank = 1
 value = 3
-texture = ExtResource("2_b2of2")
+texture = ExtResource("2_3a4hd")

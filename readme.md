@@ -104,6 +104,6 @@ Follow me on [Twitter](https://twitter.com/cow2studios) for devlogs and updates.
 
 ## Credits
 
-- [Kenney Playing Cards](https://kenney.nl/assets/playing-cards-pack) for Card Images
+- [Moxica Casino](https://moxica.itch.io/casino-playing-cards) for Card Images
 - [Kenney Sounds](https://kenney.nl/assets/casino-audio) for sounds
 - [Kenny UI Pack](https://kenney.nl/assets/ui-pack) for UI Elements
