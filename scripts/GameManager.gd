@@ -67,14 +67,11 @@ func start_new_game():
 	
 	var anim_player = shuffle_anim.get_node("AnimationPlayer")
 	
-	# Play the sound and the animation
 	SoundManager.play("card-shuffle")
 	anim_player.play("shuffle")
 	
-	# Wait for the animation player's built-in "finished" signal
 	await anim_player.animation_finished
 	
-	# Clean up the animation scene now that it's done
 	shuffle_anim.queue_free()
 	
 	# --- Deal cards (This code now runs AFTER the animation is done) ---
@@ -83,7 +80,8 @@ func start_new_game():
 		for player_index in range(4):
 			players_hands[player_index].append(deck.pop_front())
 	
-	display_all_hands()
+	# CALLING THE ANIMATION HERE
+	await deal_cards_animation()
 	
 	# --- Start the game ---
 	trick_leader_index = 0
@@ -107,7 +105,8 @@ func play_card(card_data: CardData, player_index: int):
 			emit_signal("hukum_updated", suit_name)
 	
 	display_card_on_table(card_data, player_index)
-	display_all_hands()
+	# CALLING THE INSTANT REDRAW HERE
+	redraw_hands()
 	
 	if cards_on_table.size() == 4:
 		current_state = GameState.EVALUATING
@@ -202,7 +201,61 @@ func do_ai_turn():
 		play_card(card_to_play, current_turn_index)
 	else: print("ERROR: AI has no legal moves")
 
-func display_all_hands():
+func deal_cards_animation():
+	for node in get_tree().get_nodes_in_group("player_hand_cards"):
+		node.queue_free()
+	
+	var hand_positions = [player_hand_pos, right_opponent_pos, partner_hand_pos, left_opponent_pos]
+	
+	for j in range(players_hands[0].size()):
+		for i in range(4):
+			var player_index = i
+			var hand = players_hands[player_index]
+			if j >= hand.size(): continue
+
+			var card_data = hand[j]
+			var is_human = (player_index == 0)
+			
+			var card_instance = CardScene.instantiate()
+			add_child(card_instance)
+			
+			card_instance.global_position = play_area_pos.global_position
+			card_instance.display_card(card_data, is_human)
+			
+			# Play a card slide sound for each card
+			SoundManager.play("card-slide")
+			
+			var final_pos = hand_positions[player_index].position
+			var player_card_spacing = 90
+			var enemy_card_spacing = 20
+			var card_rotation_degrees = 0
+			
+			if i == 1 or i == 3: # Left and Right opponents
+				card_rotation_degrees = 90
+				var total_size = (hand.size() - 1) * enemy_card_spacing
+				var start_offset = -total_size / 2.0
+				final_pos.y += start_offset + (j * enemy_card_spacing)
+			else: # Human and Partner
+				var total_size = (hand.size() - 1) * player_card_spacing
+				var start_offset = -total_size / 2.0
+				final_pos.x += start_offset + (j * player_card_spacing)
+			
+			var tween = create_tween()
+			tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
+			# Slower animation duration (e.g., 0.4 seconds)
+			tween.tween_property(card_instance, "global_position", final_pos, 0.4)
+			tween.tween_property(card_instance, "rotation_degrees", card_rotation_degrees, 0.4)
+			
+			if is_human:
+				card_instance.card_clicked.connect(_on_card_clicked)
+			
+			card_instance.add_to_group("player_hand_cards")
+			card_instance.add_to_group("cards")
+		
+		await get_tree().create_timer(0.12).timeout
+
+# NEW function for instant updates, no animation
+func redraw_hands():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
 	
@@ -216,36 +269,33 @@ func display_all_hands():
 		
 		var player_card_spacing = 90
 		var enemy_card_spacing = 20
-		
 		var card_rotation_degrees = 0
 		if i == 1 or i == 3:
 			card_rotation_degrees = 90
 		
+		var total_size = (hand.size() - 1) * (enemy_card_spacing if (i == 1 or i == 3) else player_card_spacing)
+		var start_offset = - total_size / 2.0
+		
 		for j in range(hand.size()):
 			var card_data = hand[j]
 			var card_instance = CardScene.instantiate()
-			
 			add_child(card_instance)
-
-			var card_pos = Vector2.ZERO
 			
-			if i == 0 or i == 2:
-				var total_size = (hand.size() - 1) * player_card_spacing
-				var start_offset = - total_size / 2.0
-				card_pos.x = start_offset + (j * player_card_spacing)
-			else:
-				var total_size = (hand.size() - 1) * enemy_card_spacing
-				var start_offset = - total_size / 2.0
+			var card_pos = Vector2.ZERO
+			if card_rotation_degrees == 90:
 				card_pos.y = start_offset + (j * enemy_card_spacing)
-
+			else:
+				card_pos.x = start_offset + (j * player_card_spacing)
+			
 			card_instance.position = pos + card_pos
 			card_instance.rotation_degrees = card_rotation_degrees
 			card_instance.display_card(card_data, is_human)
-
-			if is_human: card_instance.card_clicked.connect(_on_card_clicked)
+			
+			if is_human:
+				card_instance.card_clicked.connect(_on_card_clicked)
+			
 			card_instance.add_to_group("player_hand_cards")
 			card_instance.add_to_group("cards")
-
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
@@ -260,6 +310,7 @@ func display_card_on_table(card_data: CardData, player_index: int):
 	card_instance.position = play_area_pos.position + offset
 	card_instance.display_card(card_data)
 	card_instance.add_to_group("table_cards"); card_instance.add_to_group("cards")
+
 
 func get_trick_context():
 	var context = {"winning_card": null, "winning_player": - 1, "has_mindi": false, "is_strong_win": false}
