@@ -182,7 +182,6 @@ func do_ai_turn():
 	else: print("ERROR: AI has no legal moves")
 
 func display_all_hands():
-	# Clear old hand visuals first
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
 	
@@ -194,14 +193,12 @@ func display_all_hands():
 		var is_human = (player_index == 0)
 		var pos = hand_positions[player_index].position
 		
-		# UPDATED: Increased spacing for larger cards
-		var card_spacing = 45
-		var card_rotation_degrees = 0
-		if i == 1 or i == 3: # Left and Right opponents
-			card_rotation_degrees = 90
+		var player_card_spacing = 90
+		var enemy_card_spacing = 20
 		
-		var total_size = (hand.size() - 1) * card_spacing
-		var start_offset = - total_size / 2.0
+		var card_rotation_degrees = 0
+		if i == 1 or i == 3:
+			card_rotation_degrees = 90
 		
 		for j in range(hand.size()):
 			var card_data = hand[j]
@@ -210,10 +207,16 @@ func display_all_hands():
 			add_child(card_instance)
 
 			var card_pos = Vector2.ZERO
-			if card_rotation_degrees == 90:
-				card_pos.y = start_offset + (j * card_spacing)
+			
+			if i == 0 or i == 2:
+				var total_size = (hand.size() - 1) * player_card_spacing
+				var start_offset = - total_size / 2.0
+				card_pos.x = start_offset + (j * player_card_spacing)
 			else:
-				card_pos.x = start_offset + (j * card_spacing)
+				var total_size = (hand.size() - 1) * enemy_card_spacing
+				var start_offset = - total_size / 2.0
+				card_pos.y = start_offset + (j * enemy_card_spacing)
+
 			card_instance.position = pos + card_pos
 			card_instance.rotation_degrees = card_rotation_degrees
 			card_instance.display_card(card_data, is_human)
@@ -229,10 +232,10 @@ func display_card_on_table(card_data: CardData, player_index: int):
 	add_child(card_instance)
 	var offset = Vector2.ZERO
 	match player_index:
-		0: offset = Vector2(0, 50)
-		1: offset = Vector2(50, 0)
-		2: offset = Vector2(0, -50)
-		3: offset = Vector2(-50, 0)
+		0: offset = Vector2(0, 75)
+		1: offset = Vector2(75, 0)
+		2: offset = Vector2(0, -75)
+		3: offset = Vector2(-75, 0)
 	card_instance.position = play_area_pos.position + offset
 	card_instance.display_card(card_data)
 	card_instance.add_to_group("table_cards"); card_instance.add_to_group("cards")
