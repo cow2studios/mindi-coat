@@ -360,17 +360,14 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 	# SCENARIO A: AI is leading the trick
 	if cards_on_table.is_empty():
 		
-		## NEW: Endgame Logic ##
-		# If there are 3 or fewer tricks left, play more aggressively.
+		# Endgame Logic
 		if legal_moves.size() <= 3:
 			var highest_card_in_hand = legal_moves[-1]
 			var is_highest_remaining = true
-			# Check memory to see if any higher cards in that suit have been played
 			for card in cards_played_this_round:
 				if card.suit == highest_card_in_hand.suit and card.value > highest_card_in_hand.value:
 					is_highest_remaining = false
 					break
-			# If our card is the highest one left, play it!
 			if is_highest_remaining:
 				print("AI ENDGAME: Playing highest remaining card!")
 				return highest_card_in_hand
@@ -385,14 +382,13 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 			if ace_of_hukum_played:
 				for card in legal_moves:
 					if card.suit == hukum_suit and card.rank == CardData.Rank.K:
-						return card # Play the King, it's now the best card!
+						return card
 
 		# Standard High-Card Lead Logic
 		var high_cards = legal_moves.filter(func(card): return card.value >= 13 and (not is_hukum_set or card.suit != hukum_suit))
 		if not high_cards.is_empty():
 			return high_cards[-1]
 		
-		# Default safe play
 		return lowest_card
 
 	# SCENARIO B: AI is following
@@ -403,20 +399,17 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 	if partner_is_winning:
 		var lead_suit = cards_on_table[0].suit
 		var can_follow_suit = lowest_card.suit == lead_suit
-		# Partner Assist Logic
 		if can_follow_suit and context.is_strong_win:
 			for card in legal_moves:
 				if card.rank == CardData.Rank._10:
 					print("AI Player %s is assisting partner by playing a Mindi!" % player_index)
 					return card
-		# Discard Logic
 		if not can_follow_suit:
 			var full_hand = players_hands[player_index]
 			full_hand.sort_custom(func(a, b): return a.value < b.value)
 			for card in full_hand:
 				if is_hukum_set and card.suit != hukum_suit: return card
 			return full_hand[0]
-		# Default safe play
 		return lowest_card
 	
 	# If an opponent is winning
@@ -426,21 +419,32 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 		if can_follow_suit:
 			var cards_that_can_win = legal_moves.filter(func(card): return card.value > context.winning_card.value)
 			if not cards_that_can_win.is_empty():
-				return cards_that_can_win[0] # Win as cheaply as possible
+				return cards_that_can_win[0]
 			else:
-				return lowest_card # Can't win, play low
+				return lowest_card
 		else: # Cannot follow suit
-			# Hukum Setting Logic
 			if not is_hukum_set:
 				var best_suit_to_set = choose_best_hukum_suit(players_hands[player_index], lead_suit)
 				for card in legal_moves:
 					if card.suit == best_suit_to_set: return card
-			# Trumping Logic
+			
 			var hukum_cards = legal_moves.filter(func(card): return card.suit == hukum_suit)
 			if not hukum_cards.is_empty():
-				if context.has_mindi or (context.winning_card.suit == hukum_suit and context.winning_card.value > 10):
-					return hukum_cards[0] # Use lowest hukum to win a valuable trick
-		# Default discard
+				
+				## NEW: Partner Signaling Logic ##
+				var partner_has_trumped = false
+				for i in range(cards_on_table.size()):
+					# Check if a card on the table belongs to our partner and is a hukum
+					if player_who_played[i] % 2 == player_index % 2 and cards_on_table[i].suit == hukum_suit:
+						partner_has_trumped = true
+						break
+				
+				# Only play hukum if our partner hasn't already (or if we need to beat an opponent's hukum)
+				if not partner_has_trumped or context.winning_card.suit == hukum_suit:
+					if context.has_mindi or context.winning_card.suit == hukum_suit:
+						return hukum_cards[0]
+		
+		# Default discard if we can't or won't win
 		return lowest_card
 
 func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> CardData.Suit:
