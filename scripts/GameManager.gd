@@ -19,6 +19,7 @@ const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 @onready var timer = $Timer
 @onready var hud = $HUD
 @onready var pause_menu = $PauseMenu
+@onready var sort_button = $SortButton
 
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
@@ -38,6 +39,7 @@ var team_mindi_count = [0, 0]
 func _ready():
 	timer.timeout.connect(on_timer_timeout)
 	game_over.connect(hud.show_game_over)
+	sort_button.pressed.connect(sort_player_hand)
 	start_new_game()
 
 # This function must be async to await the animations
@@ -399,3 +401,28 @@ func _unhandled_input(event):
 				current_lead_suit = cards_on_table[0].suit
 			pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
 			pause_menu.show()
+
+func sort_player_hand():
+	# Define the custom order for the suits
+	var suit_order = {
+		CardData.Suit.SPADES: 0,
+		CardData.Suit.DIAMONDS: 1,
+		CardData.Suit.CLUBS: 2,
+		CardData.Suit.HEARTS: 3
+	}
+
+	players_hands[0].sort_custom(func(a, b):
+		# Get the custom sort number for each card's suit
+		var suit_a_priority = suit_order[a.suit]
+		var suit_b_priority = suit_order[b.suit]
+
+		# If the suits are the same, sort by rank (highest first)
+		if suit_a_priority == suit_b_priority:
+			return a.value > b.value
+		# Otherwise, sort by our custom suit priority
+		else:
+			return suit_a_priority < suit_b_priority
+	)
+
+	redraw_hands()
+	SoundManager.play("card-fan")
