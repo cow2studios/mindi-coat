@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://b8hvkks1jfjh1" path="res://assets/main_theme.tres" id="1_yqorp"]
 [ext_resource type="FontFile" uid="uid://dvekxnjagew2e" path="res://assets/font/Merriweather.ttf" id="2_0ykhv"]
 [ext_resource type="PackedScene" uid="uid://shgucd7l2skg" path="res://scenes/background.tscn" id="2_l72w3"]
-[ext_resource type="Texture2D" uid="uid://eoq17s6b2byr" path="res://assets/cards/spades_10.png" id="5_l72w3"]
+[ext_resource type="Texture2D" uid="uid://cxivecohh4cqy" path="res://assets/cards/spades_10.png" id="5_l72w3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_l72w3"]
 font = ExtResource("2_0ykhv")
@@ -40,7 +40,7 @@ label_settings = SubResource("LabelSettings_l72w3")
 
 [node name="Card" type="Sprite2D" parent="VBoxContainer/Title"]
 position = Vector2(218, 39)
-scale = Vector2(0.15, 0.15)
+scale = Vector2(0.15, 0.148848)
 texture = ExtResource("5_l72w3")
 
 [node name="Coat" type="Label" parent="VBoxContainer/Title"]
