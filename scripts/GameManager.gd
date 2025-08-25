@@ -356,7 +356,26 @@ func get_trick_context():
 func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardData:
 	legal_moves.sort_custom(func(a, b): return a.value < b.value)
 	var lowest_card = legal_moves[0]
+
+	# SCENARIO A: AI is leading the trick
 	if cards_on_table.is_empty():
+		
+		## NEW: Endgame Logic ##
+		# If there are 3 or fewer tricks left, play more aggressively.
+		if legal_moves.size() <= 3:
+			var highest_card_in_hand = legal_moves[-1]
+			var is_highest_remaining = true
+			# Check memory to see if any higher cards in that suit have been played
+			for card in cards_played_this_round:
+				if card.suit == highest_card_in_hand.suit and card.value > highest_card_in_hand.value:
+					is_highest_remaining = false
+					break
+			# If our card is the highest one left, play it!
+			if is_highest_remaining:
+				print("AI ENDGAME: Playing highest remaining card!")
+				return highest_card_in_hand
+
+		# Card Counting Logic
 		if is_hukum_set:
 			var ace_of_hukum_played = false
 			for card in cards_played_this_round:
@@ -366,41 +385,62 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 			if ace_of_hukum_played:
 				for card in legal_moves:
 					if card.suit == hukum_suit and card.rank == CardData.Rank.K:
-						return card
+						return card # Play the King, it's now the best card!
+
+		# Standard High-Card Lead Logic
 		var high_cards = legal_moves.filter(func(card): return card.value >= 13 and (not is_hukum_set or card.suit != hukum_suit))
-		if not high_cards.is_empty(): return high_cards[-1]
+		if not high_cards.is_empty():
+			return high_cards[-1]
+		
+		# Default safe play
 		return lowest_card
+
+	# SCENARIO B: AI is following
 	var context = get_trick_context()
 	var partner_is_winning = context.winning_player % 2 == player_index % 2
+
+	# If partner is winning, play safe or assist
 	if partner_is_winning:
 		var lead_suit = cards_on_table[0].suit
 		var can_follow_suit = lowest_card.suit == lead_suit
+		# Partner Assist Logic
 		if can_follow_suit and context.is_strong_win:
 			for card in legal_moves:
-				if card.rank == CardData.Rank._10: return card
+				if card.rank == CardData.Rank._10:
+					print("AI Player %s is assisting partner by playing a Mindi!" % player_index)
+					return card
+		# Discard Logic
 		if not can_follow_suit:
 			var full_hand = players_hands[player_index]
 			full_hand.sort_custom(func(a, b): return a.value < b.value)
 			for card in full_hand:
 				if is_hukum_set and card.suit != hukum_suit: return card
 			return full_hand[0]
+		# Default safe play
 		return lowest_card
+	
+	# If an opponent is winning
 	else:
 		var lead_suit = cards_on_table[0].suit
 		var can_follow_suit = lowest_card.suit == lead_suit
 		if can_follow_suit:
 			var cards_that_can_win = legal_moves.filter(func(card): return card.value > context.winning_card.value)
-			if not cards_that_can_win.is_empty(): return cards_that_can_win[0]
-			else: return lowest_card
-		else:
+			if not cards_that_can_win.is_empty():
+				return cards_that_can_win[0] # Win as cheaply as possible
+			else:
+				return lowest_card # Can't win, play low
+		else: # Cannot follow suit
+			# Hukum Setting Logic
 			if not is_hukum_set:
 				var best_suit_to_set = choose_best_hukum_suit(players_hands[player_index], lead_suit)
 				for card in legal_moves:
 					if card.suit == best_suit_to_set: return card
+			# Trumping Logic
 			var hukum_cards = legal_moves.filter(func(card): return card.suit == hukum_suit)
 			if not hukum_cards.is_empty():
 				if context.has_mindi or (context.winning_card.suit == hukum_suit and context.winning_card.value > 10):
-					return hukum_cards[0]
+					return hukum_cards[0] # Use lowest hukum to win a valuable trick
+		# Default discard
 		return lowest_card
 
 func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> CardData.Suit:
