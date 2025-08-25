@@ -1,0 +1,104 @@
+[gd_scene load_steps=3 format=3 uid="uid://ce38mdsx4n7em"]
+
+[ext_resource type="Script" uid="uid://k0xcyfwb14vy" path="res://scripts/PauseMenu.gd" id="1_g4jo0"]
+[ext_resource type="Theme" uid="uid://b8hvkks1jfjh1" path="res://assets/main_theme.tres" id="1_jvnd5"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+visible = false
+script = ExtResource("1_g4jo0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101961, 0.101961, 0.101961, 0.588235)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -340.0
+offset_right = -65.0
+offset_bottom = -126.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(3, 3)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_jvnd5")
+text = "Resume"
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ScoreBoxPanel" type="PanelContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HUDPanel"
+
+[node name="ScoreBox" type="HBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/ScoreBoxPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MindiLabel" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox"]
+layout_mode = 2
+text = "Mindi 
+Captured  "
+
+[node name="ScoreValues" type="VBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="YourTeamScoreLabel" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues"]
+layout_mode = 2
+text = "Your Team: 0"
+
+[node name="OpponentScoreLabel" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues"]
+layout_mode = 2
+text = "Opponents: 0"
+
+[node name="HukumBoxPanel" type="PanelContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HUDPanel"
+
+[node name="HukumBox" type="HBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/HukumBoxPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Hukum" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox"]
+layout_mode = 2
+text = "Hukum:    "
+
+[node name="HukumValueLabel" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox"]
+layout_mode = 2
+text = "Not Set"
+
+[node name="LeadSuitBoxPanel" type="PanelContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HUDPanel"
+
+[node name="LeadSuitBox" type="HBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LeadSuit" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
+layout_mode = 2
+text = "Lead Suit: "
+
+[node name="LeadSuitValueLabel" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
+layout_mode = 2
+text = "None"

@@ -13,7 +13,7 @@ config_version=5
 config/name="Mindi-Coat"
 run/main_scene="uid://crcrsavxxd1b2"
 config/features=PackedStringArray("4.4", "Mobile")
-boot_splash/image="uid://b0lbm1kf65588"
+boot_splash/image="uid://b6jexacl7ogfl"
 config/icon="res://icon.svg"
 
 [autoload]

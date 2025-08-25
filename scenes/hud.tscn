@@ -8,83 +8,15 @@ script = ExtResource("1_ahhtf")
 
 [node name="MainContainer" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("2_oo0fn")
-
-[node name="MarginContainer" type="MarginContainer" parent="MainContainer"]
-layout_mode = 0
-offset_right = 496.0
-offset_bottom = 266.0
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="ScoreBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_type_variation = &"HUDPanel"
-
-[node name="ScoreBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="MindiLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox"]
-layout_mode = 2
-text = "Mindi 
-Captured  "
-
-[node name="ScoreValues" type="VBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="YourTeamScoreLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues"]
-layout_mode = 2
-text = "Your Team: 0"
-
-[node name="OpponentScoreLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/ScoreBoxPanel/ScoreBox/ScoreValues"]
-layout_mode = 2
-text = "Opponents: 0"
-
-[node name="HukumBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_type_variation = &"HUDPanel"
-
-[node name="HukumBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Hukum" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox"]
-layout_mode = 2
-text = "Hukum:    "
-
-[node name="HukumValueLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/HukumBoxPanel/HukumBox"]
-layout_mode = 2
-text = "Not Set"
-
-[node name="LeadSuitBoxPanel" type="PanelContainer" parent="MainContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_type_variation = &"HUDPanel"
-
-[node name="LeadSuitBox" type="HBoxContainer" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LeadSuit" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
-layout_mode = 2
-text = "Lead Suit: "
-
-[node name="LeadSuitValueLabel" type="Label" parent="MainContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
-layout_mode = 2
-text = "None"
 
 [node name="CenterContainer" type="CenterContainer" parent="MainContainer"]
 layout_mode = 1
@@ -109,16 +41,3 @@ horizontal_alignment = 1
 [node name="NewGameButton" type="Button" parent="MainContainer/CenterContainer/GameOverPanel/VBoxContainer"]
 layout_mode = 2
 text = "Play Again"
-
-[node name="RulesButton" type="Button" parent="MainContainer"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -180.0
-offset_top = 50.0
-offset_right = -40.0
-offset_bottom = 128.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 48
-text = "Rules"

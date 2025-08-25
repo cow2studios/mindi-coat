@@ -10,6 +10,7 @@ signal lead_suit_updated(suit_name)
 const CardScene = preload("res://scenes/Card.tscn")
 const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 
+# -- Node References --
 @onready var player_hand_pos = $PlayerHandPos
 @onready var partner_hand_pos = $PartnerHandPos
 @onready var left_opponent_pos = $LeftOpponentPos
@@ -17,6 +18,7 @@ const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 @onready var play_area_pos = $PlayAreaPos
 @onready var timer = $Timer
 @onready var hud = $HUD
+@onready var pause_menu = $PauseMenu
 
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
@@ -35,13 +37,10 @@ var team_mindi_count = [0, 0]
 
 func _ready():
 	timer.timeout.connect(on_timer_timeout)
-	score_updated.connect(hud.update_score)
-	hukum_updated.connect(hud.update_hukum)
 	game_over.connect(hud.show_game_over)
-	lead_suit_updated.connect(hud.update_lead_suit)
 	start_new_game()
 
-
+# This function must be async to await the animations
 func start_new_game():
 	# --- Reset game variables ---
 	players_hands.clear()
@@ -201,6 +200,7 @@ func do_ai_turn():
 		play_card(card_to_play, current_turn_index)
 	else: print("ERROR: AI has no legal moves")
 
+# RENAMED from display_all_hands and made async
 func deal_cards_animation():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
@@ -222,7 +222,6 @@ func deal_cards_animation():
 			card_instance.global_position = play_area_pos.global_position
 			card_instance.display_card(card_data, is_human)
 			
-			# Play a card slide sound for each card
 			SoundManager.play("card-slide")
 			
 			var final_pos = hand_positions[player_index].position
@@ -233,16 +232,15 @@ func deal_cards_animation():
 			if i == 1 or i == 3: # Left and Right opponents
 				card_rotation_degrees = 90
 				var total_size = (hand.size() - 1) * enemy_card_spacing
-				var start_offset = -total_size / 2.0
+				var start_offset = - total_size / 2.0
 				final_pos.y += start_offset + (j * enemy_card_spacing)
 			else: # Human and Partner
 				var total_size = (hand.size() - 1) * player_card_spacing
-				var start_offset = -total_size / 2.0
+				var start_offset = - total_size / 2.0
 				final_pos.x += start_offset + (j * player_card_spacing)
 			
 			var tween = create_tween()
 			tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
-			# Slower animation duration (e.g., 0.4 seconds)
 			tween.tween_property(card_instance, "global_position", final_pos, 0.4)
 			tween.tween_property(card_instance, "rotation_degrees", card_rotation_degrees, 0.4)
 			
@@ -299,18 +297,16 @@ func redraw_hands():
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
-	
 	add_child(card_instance)
 	var offset = Vector2.ZERO
 	match player_index:
-		0: offset = Vector2(0, 75)
+		0: offset = Vector2(0, 75);
 		1: offset = Vector2(75, 0)
-		2: offset = Vector2(0, -75)
+		2: offset = Vector2(0, -75);
 		3: offset = Vector2(-75, 0)
 	card_instance.position = play_area_pos.position + offset
 	card_instance.display_card(card_data)
 	card_instance.add_to_group("table_cards"); card_instance.add_to_group("cards")
-
 
 func get_trick_context():
 	var context = {"winning_card": null, "winning_player": - 1, "has_mindi": false, "is_strong_win": false}
@@ -389,3 +385,17 @@ func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> 
 	for suit in suit_scores:
 		if suit_scores[suit] > max_score: max_score = suit_scores[suit]; best_suit = suit
 	return best_suit
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		if get_tree().paused:
+			get_tree().paused = false
+			pause_menu.hide()
+		else:
+			get_tree().paused = true
+			
+			var current_lead_suit = null
+			if not cards_on_table.is_empty():
+				current_lead_suit = cards_on_table[0].suit
+			pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
+			pause_menu.show()
