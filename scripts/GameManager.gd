@@ -2,7 +2,6 @@
 extends Node2D
 
 ## SIGNALS ##
-signal score_updated(team_scores)
 signal hukum_updated(suit_name)
 signal game_over(message)
 signal lead_suit_updated(suit_name)
@@ -29,6 +28,7 @@ var current_state = GameState.WAITING
 var players_hands: Array = []
 var cards_on_table: Array[CardData] = []
 var player_who_played: Array[int] = []
+var cards_played_this_round: Array[CardData] = [] # The AI's memory
 var current_turn_index = 0
 var trick_leader_index = 0
 var hukum_suit: CardData.Suit
@@ -42,7 +42,6 @@ func _ready():
 	sort_button.pressed.connect(sort_player_hand)
 	start_new_game()
 
-# This function must be async to await the animations
 func start_new_game():
 	# --- Reset game variables ---
 	players_hands.clear()
@@ -51,12 +50,10 @@ func start_new_game():
 		players_hands.append(typed_hand)
 
 	cards_on_table.clear(); player_who_played.clear()
+	cards_played_this_round.clear() # Clear the AI's memory
 	is_hukum_set = false; team_tricks_captured = [[], []]; team_mindi_count = [0, 0]
 
 	hud.game_over_panel.hide()
-	emit_signal("score_updated", team_mindi_count)
-	emit_signal("hukum_updated", "None")
-	emit_signal("lead_suit_updated", "None")
 	
 	for node in get_tree().get_nodes_in_group("cards"):
 		node.queue_free()
@@ -75,13 +72,12 @@ func start_new_game():
 	
 	shuffle_anim.queue_free()
 	
-	# --- Deal cards (This code now runs AFTER the animation is done) ---
+	# --- Deal cards ---
 	var deck = Deck.get_shuffled_deck()
 	for i in range(13):
 		for player_index in range(4):
 			players_hands[player_index].append(deck.pop_front())
 	
-	# CALLING THE ANIMATION HERE
 	await deal_cards_animation()
 	
 	# --- Start the game ---
@@ -106,7 +102,6 @@ func play_card(card_data: CardData, player_index: int):
 			emit_signal("hukum_updated", suit_name)
 	
 	display_card_on_table(card_data, player_index)
-	# CALLING THE INSTANT REDRAW HERE
 	redraw_hands()
 	
 	if cards_on_table.size() == 4:
@@ -114,6 +109,35 @@ func play_card(card_data: CardData, player_index: int):
 		timer.start(1.5)
 	else:
 		next_turn()
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		if get_tree().paused:
+			get_tree().paused = false
+			pause_menu.hide()
+		else:
+			get_tree().paused = true
+			var current_lead_suit = null
+			if not cards_on_table.is_empty():
+				current_lead_suit = cards_on_table[0].suit
+			pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
+			pause_menu.show()
+
+func sort_player_hand():
+	var suit_order = {
+		CardData.Suit.SPADES: 0, CardData.Suit.DIAMONDS: 1,
+		CardData.Suit.CLUBS: 2, CardData.Suit.HEARTS: 3
+	}
+	players_hands[0].sort_custom(func(a, b):
+		var suit_a_priority = suit_order[a.suit]
+		var suit_b_priority = suit_order[b.suit]
+		if suit_a_priority == suit_b_priority:
+			return a.value > b.value
+		else:
+			return suit_a_priority < suit_b_priority
+	)
+	redraw_hands()
+	SoundManager.play("card-fan")
 
 func _on_card_clicked(card_data: CardData):
 	if current_state != GameState.PLAYER_TURN: return
@@ -150,9 +174,9 @@ func evaluate_trick():
 	var winner_team = trick_leader_index % 2
 	for card in cards_on_table:
 		if card.rank == CardData.Rank._10: team_mindi_count[winner_team] += 1
-	emit_signal("score_updated", team_mindi_count)
+	
+	cards_played_this_round.append_array(cards_on_table)
 	team_tricks_captured[winner_team].append_array(cards_on_table)
-	emit_signal("lead_suit_updated", "None")
 	
 	cards_on_table.clear(); player_who_played.clear()
 	for node in get_tree().get_nodes_in_group("table_cards"):
@@ -202,7 +226,6 @@ func do_ai_turn():
 		play_card(card_to_play, current_turn_index)
 	else: print("ERROR: AI has no legal moves")
 
-# RENAMED from display_all_hands and made async
 func deal_cards_animation():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
@@ -254,7 +277,6 @@ func deal_cards_animation():
 		
 		await get_tree().create_timer(0.12).timeout
 
-# NEW function for instant updates, no animation
 func redraw_hands():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
@@ -303,9 +325,9 @@ func display_card_on_table(card_data: CardData, player_index: int):
 	var offset = Vector2.ZERO
 	match player_index:
 		0: offset = Vector2(0, 75);
-		1: offset = Vector2(75, 0)
+		1: offset = Vector2(75, 0);
 		2: offset = Vector2(0, -75);
-		3: offset = Vector2(-75, 0)
+		3: offset = Vector2(-75, 0);
 	card_instance.position = play_area_pos.position + offset
 	card_instance.display_card(card_data)
 	card_instance.add_to_group("table_cards"); card_instance.add_to_group("cards")
@@ -335,6 +357,16 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 	legal_moves.sort_custom(func(a, b): return a.value < b.value)
 	var lowest_card = legal_moves[0]
 	if cards_on_table.is_empty():
+		if is_hukum_set:
+			var ace_of_hukum_played = false
+			for card in cards_played_this_round:
+				if card.suit == hukum_suit and card.rank == CardData.Rank.A:
+					ace_of_hukum_played = true
+					break
+			if ace_of_hukum_played:
+				for card in legal_moves:
+					if card.suit == hukum_suit and card.rank == CardData.Rank.K:
+						return card
 		var high_cards = legal_moves.filter(func(card): return card.value >= 13 and (not is_hukum_set or card.suit != hukum_suit))
 		if not high_cards.is_empty(): return high_cards[-1]
 		return lowest_card
@@ -387,42 +419,3 @@ func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> 
 	for suit in suit_scores:
 		if suit_scores[suit] > max_score: max_score = suit_scores[suit]; best_suit = suit
 	return best_suit
-
-func _unhandled_input(event):
-	if event.is_action_pressed("ui_cancel"):
-		if get_tree().paused:
-			get_tree().paused = false
-			pause_menu.hide()
-		else:
-			get_tree().paused = true
-			
-			var current_lead_suit = null
-			if not cards_on_table.is_empty():
-				current_lead_suit = cards_on_table[0].suit
-			pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
-			pause_menu.show()
-
-func sort_player_hand():
-	# Define the custom order for the suits
-	var suit_order = {
-		CardData.Suit.SPADES: 0,
-		CardData.Suit.DIAMONDS: 1,
-		CardData.Suit.CLUBS: 2,
-		CardData.Suit.HEARTS: 3
-	}
-
-	players_hands[0].sort_custom(func(a, b):
-		# Get the custom sort number for each card's suit
-		var suit_a_priority = suit_order[a.suit]
-		var suit_b_priority = suit_order[b.suit]
-
-		# If the suits are the same, sort by rank (highest first)
-		if suit_a_priority == suit_b_priority:
-			return a.value > b.value
-		# Otherwise, sort by our custom suit priority
-		else:
-			return suit_a_priority < suit_b_priority
-	)
-
-	redraw_hands()
-	SoundManager.play("card-fan")
