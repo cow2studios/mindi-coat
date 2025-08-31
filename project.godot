@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Mindi-Coat"
+config/name="Mindi Coat"
+config/tags=PackedStringArray("card")
 run/main_scene="uid://crcrsavxxd1b2"
 config/features=PackedStringArray("4.4", "Mobile")
 boot_splash/image="uid://b6jexacl7ogfl"

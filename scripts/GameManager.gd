@@ -359,7 +359,6 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 
 	# SCENARIO A: AI is leading the trick
 	if cards_on_table.is_empty():
-		
 		# Endgame Logic
 		if legal_moves.size() <= 3:
 			var highest_card_in_hand = legal_moves[-1]
@@ -399,17 +398,47 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 	if partner_is_winning:
 		var lead_suit = cards_on_table[0].suit
 		var can_follow_suit = lowest_card.suit == lead_suit
+		
 		if can_follow_suit and context.is_strong_win:
+			var mindi_card = null
 			for card in legal_moves:
 				if card.rank == CardData.Rank._10:
-					print("AI Player %s is assisting partner by playing a Mindi!" % player_index)
-					return card
+					mindi_card = card
+					break
+			
+			if mindi_card:
+				## NEW: Danger Check Logic ##
+				var is_safe_to_play_mindi = true
+				# Check memory for unplayed high cards of the lead suit
+				var high_cards_to_check = [CardData.Rank.A, CardData.Rank.K, CardData.Rank.Q, CardData.Rank.J]
+				for rank_to_check in high_cards_to_check:
+					var high_card_is_played = false
+					# Does the AI hold this high card itself?
+					for c in players_hands[player_index]:
+						if c.suit == lead_suit and c.rank == rank_to_check: high_card_is_played = true; break
+					if high_card_is_played: continue
+					
+					# Has this high card already been played this round? (Checks memory)
+					for c in cards_played_this_round:
+						if c.suit == lead_suit and c.rank == rank_to_check: high_card_is_played = true; break
+					
+					# If the high card is not in our hand and not in memory, it's dangerous
+					if not high_card_is_played:
+						is_safe_to_play_mindi = false
+						break
+				
+				if is_safe_to_play_mindi:
+					print("AI Player %s is SAFELY assisting partner!" % player_index)
+					return mindi_card
+
+		# Discard Logic if not assisting
 		if not can_follow_suit:
 			var full_hand = players_hands[player_index]
 			full_hand.sort_custom(func(a, b): return a.value < b.value)
 			for card in full_hand:
 				if is_hukum_set and card.suit != hukum_suit: return card
 			return full_hand[0]
+		# Default safe play
 		return lowest_card
 	
 	# If an opponent is winning
@@ -423,28 +452,27 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 			else:
 				return lowest_card
 		else: # Cannot follow suit
+			# Hukum Setting Logic
 			if not is_hukum_set:
 				var best_suit_to_set = choose_best_hukum_suit(players_hands[player_index], lead_suit)
 				for card in legal_moves:
 					if card.suit == best_suit_to_set: return card
 			
+			# Trumping Logic
 			var hukum_cards = legal_moves.filter(func(card): return card.suit == hukum_suit)
 			if not hukum_cards.is_empty():
-				
-				## NEW: Partner Signaling Logic ##
+				# Partner Signaling Logic
 				var partner_has_trumped = false
 				for i in range(cards_on_table.size()):
-					# Check if a card on the table belongs to our partner and is a hukum
 					if player_who_played[i] % 2 == player_index % 2 and cards_on_table[i].suit == hukum_suit:
 						partner_has_trumped = true
 						break
 				
-				# Only play hukum if our partner hasn't already (or if we need to beat an opponent's hukum)
 				if not partner_has_trumped or context.winning_card.suit == hukum_suit:
 					if context.has_mindi or context.winning_card.suit == hukum_suit:
 						return hukum_cards[0]
 		
-		# Default discard if we can't or won't win
+		# Default discard
 		return lowest_card
 
 func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> CardData.Suit:
