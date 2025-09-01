@@ -35,6 +35,7 @@ var hukum_suit: CardData.Suit
 var is_hukum_set = false
 var team_tricks_captured: Array = [[], []]
 var team_mindi_count = [0, 0]
+var team_trick_wins = [0, 0]
 
 func _ready():
 	timer.timeout.connect(on_timer_timeout)
@@ -51,7 +52,9 @@ func start_new_game():
 
 	cards_on_table.clear(); player_who_played.clear()
 	cards_played_this_round.clear() # Clear the AI's memory
-	is_hukum_set = false; team_tricks_captured = [[], []]; team_mindi_count = [0, 0]
+	is_hukum_set = false; team_tricks_captured = [[], []];
+	team_mindi_count = [0, 0]
+	team_trick_wins = [0, 0]
 
 	hud.game_over_panel.hide()
 	
@@ -172,6 +175,8 @@ func evaluate_trick():
 	
 	self.trick_leader_index = player_who_played[winner_index_in_trick]
 	var winner_team = trick_leader_index % 2
+	team_trick_wins[winner_team] += 1
+
 	for card in cards_on_table:
 		if card.rank == CardData.Rank._10: team_mindi_count[winner_team] += 1
 	
@@ -190,14 +195,22 @@ func evaluate_trick():
 func end_round():
 	current_state = GameState.WAITING
 	var final_message = ""
+	
 	if team_mindi_count[0] > team_mindi_count[1]:
 		final_message = "Your Team Wins!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
 		if team_mindi_count[1] == 0: final_message += "\nCOAT!"
 	elif team_mindi_count[1] > team_mindi_count[0]:
 		final_message = "Opponents Win!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
 		if team_mindi_count[0] == 0: final_message += "\nCOAT!"
-	else:
-		final_message = "It's a Draw!\nScore: 2 - 2"
+	else: # Mindi count is 2-2, check the tie-breaker
+		if team_trick_wins[0] > team_trick_wins[1]:
+			final_message = "Your Team Wins on Tricks!\nTricks: %s - %s" % [team_trick_wins[0], team_trick_wins[1]]
+		elif team_trick_wins[1] > team_trick_wins[0]:
+			final_message = "Opponents Win on Tricks!\nTricks: %s - %s" % [team_trick_wins[1], team_trick_wins[0]]
+		else: # Extremely rare case of 7-6 tricks and a 2-2 Mindi split, resulting in a true draw
+			final_message = "It's a True Draw!\nScore: 2 - 2"
+
+	hud.show()
 	emit_signal("game_over", final_message)
 
 func next_turn():
@@ -407,27 +420,35 @@ func choose_best_card(player_index: int, legal_moves: Array[CardData]) -> CardDa
 					break
 			
 			if mindi_card:
-				## NEW: Danger Check Logic ##
-				var is_safe_to_play_mindi = true
-				# Check memory for unplayed high cards of the lead suit
-				var high_cards_to_check = [CardData.Rank.A, CardData.Rank.K, CardData.Rank.Q, CardData.Rank.J]
-				for rank_to_check in high_cards_to_check:
-					var high_card_is_played = false
-					# Does the AI hold this high card itself?
+				## NEW & IMPROVED: Danger Check Logic ##
+				var unaccounted_high_cards = []
+				# Find which high cards are still missing
+				var high_card_ranks = [CardData.Rank.A, CardData.Rank.K, CardData.Rank.Q, CardData.Rank.J]
+				for rank_to_check in high_card_ranks:
+					var is_accounted_for = false
+					# Check AI's own hand
 					for c in players_hands[player_index]:
-						if c.suit == lead_suit and c.rank == rank_to_check: high_card_is_played = true; break
-					if high_card_is_played: continue
-					
-					# Has this high card already been played this round? (Checks memory)
+						if c.suit == lead_suit and c.rank == rank_to_check: is_accounted_for = true; break
+					if is_accounted_for: continue
+					# Check memory of played cards
 					for c in cards_played_this_round:
-						if c.suit == lead_suit and c.rank == rank_to_check: high_card_is_played = true; break
-					
-					# If the high card is not in our hand and not in memory, it's dangerous
-					if not high_card_is_played:
-						is_safe_to_play_mindi = false
+						if c.suit == lead_suit and c.rank == rank_to_check: is_accounted_for = true; break
+					# If not found, it's a potential threat
+					if not is_accounted_for:
+						unaccounted_high_cards.append(rank_to_check)
+				
+				# Now check if we hold all the threatening cards
+				var has_all_threats = true
+				for threat_rank in unaccounted_high_cards:
+					var has_this_threat = false
+					for c in players_hands[player_index]:
+						if c.suit == lead_suit and c.rank == threat_rank: has_this_threat = true; break
+					if not has_this_threat:
+						has_all_threats = false
 						break
 				
-				if is_safe_to_play_mindi:
+				# Only play the mindi if there are no outstanding threats
+				if has_all_threats:
 					print("AI Player %s is SAFELY assisting partner!" % player_index)
 					return mindi_card
 
