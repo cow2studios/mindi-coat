@@ -19,6 +19,7 @@ const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 @onready var hud = $HUD
 @onready var pause_menu = $PauseMenu
 @onready var sort_button = $SortButton
+@onready var pause_button = $PauseButton
 
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
@@ -41,6 +42,7 @@ func _ready():
 	timer.timeout.connect(on_timer_timeout)
 	game_over.connect(hud.show_game_over)
 	sort_button.pressed.connect(sort_player_hand)
+	pause_button.pressed.connect(toggle_pause)
 	start_new_game()
 
 func start_new_game():
@@ -113,18 +115,21 @@ func play_card(card_data: CardData, player_index: int):
 	else:
 		next_turn()
 
+func toggle_pause():
+	if get_tree().paused:
+		get_tree().paused = false
+		pause_menu.hide()
+	else:
+		get_tree().paused = true
+		var current_lead_suit = null
+		if not cards_on_table.is_empty():
+			current_lead_suit = cards_on_table[0].suit
+		pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
+		pause_menu.show()
+
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
-		if get_tree().paused:
-			get_tree().paused = false
-			pause_menu.hide()
-		else:
-			get_tree().paused = true
-			var current_lead_suit = null
-			if not cards_on_table.is_empty():
-				current_lead_suit = cards_on_table[0].suit
-			pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
-			pause_menu.show()
+		toggle_pause()
 
 func sort_player_hand():
 	var suit_order = {
