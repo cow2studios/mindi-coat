@@ -1,15 +1,15 @@
 [gd_resource type="Theme" load_steps=29 format=3 uid="uid://b8hvkks1jfjh1"]
 
-[ext_resource type="FontFile" uid="uid://dvekxnjagew2e" path="res://assets/font/Merriweather.ttf" id="1_d80jv"]
+[ext_resource type="FontFile" uid="uid://bm5xfdf4tlqyt" path="res://assets/font/ARCADECLASSIC.TTF" id="1_pl0ij"]
 [ext_resource type="Texture2D" uid="uid://bt76m77qcbtj0" path="res://assets/ui/png/Blue/Default/button_square_gradient.png" id="2_2jsj3"]
 [ext_resource type="Texture2D" uid="uid://c52014wsedxgw" path="res://assets/ui/png/Blue/Default/button_square_gloss.png" id="3_2jsj3"]
 [ext_resource type="Texture2D" uid="uid://hb1vat7vrp7c" path="res://assets/ui/png/Blue/Default/button_square_flat.png" id="4_2jsj3"]
 [ext_resource type="Texture2D" uid="uid://cmti7y3qpftve" path="res://assets/ui/png/Red/Default/button_rectangle_gradient.png" id="5_2jsj3"]
-[ext_resource type="Texture2D" uid="uid://c0bvmo0pcom2p" path="res://assets/ui/png/Green/Default/button_rectangle_depth_gradient.png" id="5_6f8b1"]
+[ext_resource type="Texture2D" uid="uid://ftq8cudl0cl1" path="res://assets/ui/png/Yellow/Double/button_rectangle_depth_gradient.png" id="5_6f8b1"]
 [ext_resource type="Texture2D" uid="uid://c57wlymbqowqp" path="res://assets/ui/png/Red/Default/button_rectangle_gloss.png" id="6_2est8"]
-[ext_resource type="Texture2D" uid="uid://chkghfo23ooin" path="res://assets/ui/png/Green/Default/button_rectangle_depth_gloss.png" id="6_pl0ij"]
+[ext_resource type="Texture2D" uid="uid://61abk1lrgufn" path="res://assets/ui/png/Yellow/Double/button_rectangle_depth_gloss.png" id="6_pl0ij"]
 [ext_resource type="Texture2D" uid="uid://n0nogrqxs5a" path="res://assets/ui/png/Red/Default/button_rectangle_flat.png" id="7_7ojh6"]
-[ext_resource type="Texture2D" uid="uid://c6wg4xafdhfkq" path="res://assets/ui/png/Green/Default/button_rectangle_depth_flat.png" id="7_mfaqg"]
+[ext_resource type="Texture2D" uid="uid://bbjp2gf7jbd4k" path="res://assets/ui/png/Yellow/Double/button_rectangle_depth_flat.png" id="7_mfaqg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xgdp2"]
 content_margin_left = 4.0
@@ -144,7 +144,7 @@ Button/constants/h_separation = 4
 Button/constants/icon_max_width = 0
 Button/constants/outline_size = 0
 Button/font_sizes/font_size = 36
-Button/fonts/font = ExtResource("1_d80jv")
+Button/fonts/font = ExtResource("1_pl0ij")
 Button/styles/disabled = SubResource("StyleBoxFlat_xgdp2")
 Button/styles/focus = SubResource("StyleBoxFlat_d80jv")
 Button/styles/hover = SubResource("StyleBoxTexture_7ojh6")
@@ -164,7 +164,7 @@ Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/font_sizes/font_size = 40
-Label/fonts/font = ExtResource("1_d80jv")
+Label/fonts/font = ExtResource("1_pl0ij")
 Label/styles/normal = SubResource("StyleBoxEmpty_xgdp2")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_upuy7")
 PauseButton/base_type = &"Button"
@@ -186,7 +186,7 @@ PauseButton/constants/h_separation = 0
 PauseButton/constants/icon_max_width = 0
 PauseButton/constants/outline_size = 0
 PauseButton/font_sizes/font_size = 40
-PauseButton/fonts/font = ExtResource("1_d80jv")
+PauseButton/fonts/font = ExtResource("1_pl0ij")
 PauseButton/styles/disabled = SubResource("StyleBoxFlat_2jknw")
 PauseButton/styles/focus = SubResource("StyleBoxFlat_2jknw")
 PauseButton/styles/hover = SubResource("StyleBoxTexture_mfaqg")
@@ -211,7 +211,7 @@ QuitButton/constants/h_separation = 0
 QuitButton/constants/icon_max_width = 0
 QuitButton/constants/outline_size = 0
 QuitButton/font_sizes/font_size = 36
-QuitButton/fonts/font = ExtResource("1_d80jv")
+QuitButton/fonts/font = ExtResource("1_pl0ij")
 QuitButton/styles/disabled = SubResource("StyleBoxFlat_7ojh6")
 QuitButton/styles/focus = SubResource("StyleBoxFlat_7ojh6")
 QuitButton/styles/hover = SubResource("StyleBoxTexture_6f8b1")

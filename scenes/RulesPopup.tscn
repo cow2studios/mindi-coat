@@ -9,7 +9,6 @@
 bg_color = Color(0.101961, 0.101961, 0.101961, 1)
 
 [node name="RulesPopup" type="CanvasLayer"]
-visible = false
 script = ExtResource("1_tma66")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -43,10 +42,15 @@ theme_override_fonts/normal_font = ExtResource("3_d8rj2")
 theme_override_fonts/italics_font = ExtResource("4_fams4")
 theme_override_font_sizes/normal_font_size = 36
 text = "Mindi is a 4-player team game (2 vs 2). The goal is to capture as many 10s (Mindis) as possible.
+
 - Dealing: All 52 cards are dealt, 13 to each player.
+
 - Gameplay: Players must follow the suit of the first card played in a trick. If a player cannot follow suit, they can play any card.
+
 - Hukum (Trump): The first time a player cannot follow suit, the suit of the card they play becomes the Hukum (trump) for the rest of the round. The highest Hukum card wins any trick it's played in.
+
 - Winning a Trick: The highest card of the lead suit wins, unless a Hukum is played. The highest Hukum wins the trick.
+
 - Scoring: At the end of the round, the teams count the number of 10s they captured. The team with more 10s wins. Capturing all four 10s is a \"Coat\"."
 fit_content = true
 scroll_active = false
