@@ -340,15 +340,35 @@ func redraw_hands():
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
 	add_child(card_instance)
-	var offset = Vector2.ZERO
+
+	# 1. Determine the animation's start and end positions
+	var start_pos = Vector2.ZERO
 	match player_index:
-		0: offset = Vector2(0, 75);
-		1: offset = Vector2(75, 0);
-		2: offset = Vector2(0, -75);
-		3: offset = Vector2(-75, 0);
-	card_instance.position = play_area_pos.position + offset
+		0: start_pos = player_hand_pos.global_position
+		1: start_pos = right_opponent_pos.global_position
+		2: start_pos = partner_hand_pos.global_position
+		3: start_pos = left_opponent_pos.global_position
+
+	var end_offset = Vector2.ZERO
+	match player_index:
+		0: end_offset = Vector2(0, 75)
+		1: end_offset = Vector2(75, 0)
+		2: end_offset = Vector2(0, -75)
+		3: end_offset = Vector2(-75, 0)
+	var end_pos = play_area_pos.position + end_offset
+
+	# 2. Set the card's initial state at the start position
+	card_instance.global_position = start_pos
 	card_instance.display_card(card_data)
-	card_instance.add_to_group("table_cards"); card_instance.add_to_group("cards")
+	card_instance.add_to_group("table_cards")
+	card_instance.add_to_group("cards")
+
+	# 3. Create and run the tween animation
+	var tween = create_tween()
+	# Use a smooth easing function for a nice feel
+	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	# Animate the 'global_position' property to the end_pos over 0.3 seconds
+	tween.tween_property(card_instance, "global_position", end_pos, 0.3)
 
 func get_trick_context():
 	var context = {"winning_card": null, "winning_player": - 1, "has_mindi": false, "is_strong_win": false}
