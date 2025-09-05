@@ -31,7 +31,7 @@ theme_override_constants/separation = 30
 
 [node name="Title" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 70
+theme_override_constants/separation = 100
 
 [node name="Mindi" type="Label" parent="VBoxContainer/Title"]
 layout_mode = 2
@@ -39,8 +39,8 @@ text = "Mindi"
 label_settings = SubResource("LabelSettings_l72w3")
 
 [node name="Card" type="Sprite2D" parent="VBoxContainer/Title"]
-position = Vector2(218, 39)
-scale = Vector2(0.15, 0.148848)
+position = Vector2(233, 37)
+scale = Vector2(0.25, 0.248)
 texture = ExtResource("5_l72w3")
 
 [node name="Coat" type="Label" parent="VBoxContainer/Title"]

@@ -17,14 +17,18 @@ grow_vertical = 2
 color = Color(0.101961, 0.101961, 0.101961, 0.588235)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -1150.0
-offset_bottom = -646.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -240.0
+offset_right = 31.0
+offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2.5, 2.5)
+scale = Vector2(2, 2)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
@@ -98,3 +102,9 @@ text = "Lead Suit: "
 [node name="LeadSuitValueLabel" type="Label" parent="CenterContainer/VBoxContainer/MarginContainer/VBoxContainer/LeadSuitBoxPanel/LeadSuitBox"]
 layout_mode = 2
 text = "None"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_jvnd5")
+theme_type_variation = &"QuitButton"
+text = "Back to Main Menu"

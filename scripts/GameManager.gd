@@ -202,16 +202,16 @@ func end_round():
 	var final_message = ""
 	
 	if team_mindi_count[0] > team_mindi_count[1]:
-		final_message = "Your Team Wins!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
-		if team_mindi_count[1] == 0: final_message += "\nCOAT!"
+		final_message = "Your  Team  Wins!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
+		if team_mindi_count[1] == 0: final_message += "\nOpponent  has  COAT!"
 	elif team_mindi_count[1] > team_mindi_count[0]:
-		final_message = "Opponents Win!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
-		if team_mindi_count[0] == 0: final_message += "\nCOAT!"
+		final_message = "Opponents  Win!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
+		if team_mindi_count[0] == 0: final_message += "\nYour  team  has  COAT!"
 	else: # Mindi count is 2-2, check the tie-breaker
 		if team_trick_wins[0] > team_trick_wins[1]:
-			final_message = "Your Team Wins on Tricks!\nTricks: %s - %s" % [team_trick_wins[0], team_trick_wins[1]]
+			final_message = "Your  Team  Wins  on  Tricks!\nTricks: %s - %s" % [team_trick_wins[0], team_trick_wins[1]]
 		elif team_trick_wins[1] > team_trick_wins[0]:
-			final_message = "Opponents Win on Tricks!\nTricks: %s - %s" % [team_trick_wins[1], team_trick_wins[0]]
+			final_message = "Opponents  Win  on  Tricks!\nTricks: %s - %s" % [team_trick_wins[1], team_trick_wins[0]]
 		else: # Extremely rare case of 7-6 tricks and a 2-2 Mindi split, resulting in a true draw
 			final_message = "It's a True Draw!\nScore: 2 - 2"
 

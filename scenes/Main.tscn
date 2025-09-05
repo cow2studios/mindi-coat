@@ -1,14 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://kph56udacacy"]
+[gd_scene load_steps=6 format=3 uid="uid://kph56udacacy"]
 
 [ext_resource type="PackedScene" uid="uid://shgucd7l2skg" path="res://scenes/background.tscn" id="1_elqb8"]
 [ext_resource type="Script" uid="uid://phydaif8utxe" path="res://scripts/GameManager.gd" id="1_rvslj"]
 [ext_resource type="PackedScene" uid="uid://ttbscvnqnm0w" path="res://scenes/hud.tscn" id="3_rarhs"]
 [ext_resource type="PackedScene" uid="uid://ce38mdsx4n7em" path="res://scenes/PauseMenu.tscn" id="4_rarhs"]
-[ext_resource type="Texture2D" uid="uid://0gneq0cchmyf" path="res://assets/ui/png/Blue/Double/button_round_depth_gloss.png" id="5_nxtc6"]
 [ext_resource type="Theme" uid="uid://b8hvkks1jfjh1" path="res://assets/main_theme.tres" id="5_q8u5g"]
-[ext_resource type="Texture2D" uid="uid://dudms8el30h0x" path="res://assets/ui/png/Blue/Double/button_round_depth_gradient.png" id="6_jlsqs"]
-[ext_resource type="Texture2D" uid="uid://dj0huc0ifsa5r" path="res://assets/ui/png/Blue/Double/button_round_depth_flat.png" id="7_q8u5g"]
-[ext_resource type="FontFile" uid="uid://dvekxnjagew2e" path="res://assets/font/Merriweather.ttf" id="8_jlsqs"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_rvslj")
@@ -38,38 +34,19 @@ position = Vector2(1600, 540)
 [node name="PauseMenu" parent="." instance=ExtResource("4_rarhs")]
 
 [node name="PauseButton" type="Button" parent="."]
-offset_left = 20.0
-offset_top = 25.0
-offset_right = 278.0
-offset_bottom = 103.0
+offset_left = 3.0
+offset_top = 5.0
+offset_right = 261.0
+offset_bottom = 83.0
 theme = ExtResource("5_q8u5g")
 theme_type_variation = &"PauseButton"
-text = "Pause Menu"
+text = "Pause  Menu"
 
-[node name="SortButton" type="TextureButton" parent="."]
-anchors_preset = -1
-offset_left = 1781.0
-offset_top = 14.0
-offset_right = 1909.0
-offset_bottom = 142.0
-size_flags_horizontal = 8
-size_flags_vertical = 8
-texture_normal = ExtResource("5_nxtc6")
-texture_pressed = ExtResource("6_jlsqs")
-texture_hover = ExtResource("7_q8u5g")
-
-[node name="Sort" type="Label" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 1795.5
-offset_top = 46.0
-offset_right = 1894.5
-offset_bottom = 110.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("8_jlsqs")
-theme_override_font_sizes/font_size = 50
+[node name="SortButton" type="Button" parent="."]
+offset_left = 1722.0
+offset_top = 10.0
+offset_right = 1817.0
+offset_bottom = 64.0
+scale = Vector2(2, 2)
+theme = ExtResource("5_q8u5g")
 text = "Sort"
