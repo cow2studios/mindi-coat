@@ -24,6 +24,9 @@ const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
 var current_state = GameState.WAITING
+var is_dealing = false
+var has_sorted_this_round = false
+var is_hukum_set = false
 
 # -- Game Logic Variables --
 var players_hands: Array = []
@@ -33,7 +36,6 @@ var cards_played_this_round: Array[CardData] = [] # The AI's memory
 var current_turn_index = 0
 var trick_leader_index = 0
 var hukum_suit: CardData.Suit
-var is_hukum_set = false
 var team_tricks_captured: Array = [[], []]
 var team_mindi_count = [0, 0]
 var team_trick_wins = [0, 0]
@@ -53,10 +55,13 @@ func start_new_game():
 		players_hands.append(typed_hand)
 
 	cards_on_table.clear(); player_who_played.clear()
-	cards_played_this_round.clear() # Clear the AI's memory
+	cards_played_this_round.clear()
 	is_hukum_set = false; team_tricks_captured = [[], []];
 	team_mindi_count = [0, 0]
 	team_trick_wins = [0, 0]
+	is_dealing = true
+	has_sorted_this_round = false
+	sort_button.disabled = true
 
 	hud.game_over_panel.hide()
 	
@@ -132,6 +137,12 @@ func _unhandled_input(event):
 		toggle_pause()
 
 func sort_player_hand():
+	if is_dealing or has_sorted_this_round:
+		return
+
+	has_sorted_this_round = true
+	sort_button.disabled = true
+
 	var suit_order = {
 		CardData.Suit.SPADES: 0, CardData.Suit.DIAMONDS: 1,
 		CardData.Suit.CLUBS: 2, CardData.Suit.HEARTS: 3
@@ -294,6 +305,9 @@ func deal_cards_animation():
 			card_instance.add_to_group("cards")
 		
 		await get_tree().create_timer(0.12).timeout
+
+	is_dealing = false
+	sort_button.disabled = false
 
 func redraw_hands():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
