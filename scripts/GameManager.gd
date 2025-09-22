@@ -617,7 +617,7 @@ func animate_trick_capture(winner_team):
 		target_pos = opponent_team_tricks_container.global_position + opponent_team_tricks_container.size / 2
 
 	var tween = create_tween()
-	tween.set_parallel(true) 
+	tween.set_parallel(true)
 
 	for card_node in table_cards:
 		tween.tween_property(card_node, "global_position", target_pos, 0.4)\

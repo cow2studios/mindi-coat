@@ -3,15 +3,30 @@ extends Area2D
 
 signal card_clicked(card_data)
 
+@onready var mindi_outline = $MindiOutline
+
 var card_data: CardData
 
 func display_card(data: CardData, show_face: bool = true):
 	self.card_data = data
-	$CardSprite.texture = card_data.texture
-	$CardSprite.visible = show_face
-	$CardBack.visible = not show_face
 	
-	input_event.connect(_on_input_event)
+	if show_face:
+		$CardSprite.texture = card_data.texture
+		$CardSprite.visible = true
+		$CardBack.visible = false
+		
+		if card_data.rank == CardData.Rank._10:
+			mindi_outline.show()
+		else:
+			mindi_outline.hide()
+			
+	else:
+		$CardSprite.visible = false
+		$CardBack.visible = true
+		mindi_outline.hide()
+
+	if not input_event.is_connected(_on_input_event):
+		input_event.connect(_on_input_event)
 
 func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
