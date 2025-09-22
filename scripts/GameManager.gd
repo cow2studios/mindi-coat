@@ -49,6 +49,13 @@ func _ready():
 	pause_button.pressed.connect(toggle_pause)
 	start_new_game()
 
+func update_all_card_outlines():
+	for card_node in get_tree().get_nodes_in_group("cards"):
+		if is_hukum_set:
+			card_node.update_hukum_status(hukum_suit)
+		else:
+			card_node.update_hukum_status(null)
+
 func start_new_game():
 	# --- Reset game variables ---
 	players_hands.clear()
@@ -117,6 +124,7 @@ func play_card(card_data: CardData, player_index: int):
 			hukum_suit = card_data.suit
 			var suit_name = CardData.Suit.keys()[hukum_suit]
 			emit_signal("hukum_updated", suit_name)
+			update_all_card_outlines()
 	
 	display_card_on_table(card_data, player_index)
 	redraw_hands()
@@ -365,6 +373,8 @@ func redraw_hands():
 			
 			card_instance.add_to_group("player_hand_cards")
 			card_instance.add_to_group("cards")
+	
+	update_all_card_outlines()
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
