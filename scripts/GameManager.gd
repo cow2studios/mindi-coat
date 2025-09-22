@@ -200,17 +200,13 @@ func evaluate_trick():
 	var winner_team = trick_leader_index % 2
 	team_trick_wins[winner_team] += 1
 
-	var mindi_in_trick = null
+	var mindis_in_trick: Array[CardData] = []
 	for card in cards_on_table:
 		if card.rank == CardData.Rank._10:
 			team_mindi_count[winner_team] += 1
-			mindi_in_trick = card
-			break 
+			mindis_in_trick.append(card) # Add all mindis to an array
 
-	update_trick_display(winner_team, mindi_in_trick)
-
-	for card in cards_on_table:
-		if card.rank == CardData.Rank._10: team_mindi_count[winner_team] += 1
+	update_trick_display(winner_team, mindis_in_trick)
 	
 	cards_played_this_round.append_array(cards_on_table)
 	team_tricks_captured[winner_team].append_array(cards_on_table)
@@ -568,26 +564,40 @@ func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> 
 		if suit_scores[suit] > max_score: max_score = suit_scores[suit]; best_suit = suit
 	return best_suit
 
-func update_trick_display(winner_team, mindi_card):
-	# Create the icon that will be displayed
-	var trick_icon = TextureRect.new()
-	if mindi_card:
-		trick_icon.texture = mindi_card.texture
-	else:
+func update_trick_display(winner_team, mindi_cards: Array[CardData]):
+	if mindi_cards.is_empty():
+		var trick_icon = TextureRect.new()
 		trick_icon.texture = preload("res://assets/cards/back01.png")
+		trick_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		trick_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		trick_icon.custom_minimum_size = Vector2(80, 112)
 
-	trick_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	trick_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	
-	var card_size = Vector2(80, 112)
-	trick_icon.custom_minimum_size = card_size
+		if winner_team == 0:
+			player_team_tricks_container.add_child(trick_icon)
+		else:
+			var wrapper = Control.new()
+			wrapper.custom_minimum_size = Vector2(112, 80)
+			wrapper.add_child(trick_icon)
+			trick_icon.rotation_degrees = 90
+			trick_icon.position = Vector2(0, 80)
+			opponent_team_tricks_container.add_child(wrapper)
+		return
 
-	if winner_team == 0: # Player's Team
-		player_team_tricks_container.add_child(trick_icon)
-	else: # Opponent's Team
-		var wrapper = Control.new()
-		wrapper.custom_minimum_size = Vector2(card_size.y, card_size.x)
-		wrapper.add_child(trick_icon)
-		trick_icon.rotation_degrees = 90
-		trick_icon.position = Vector2(0, card_size.x)
-		opponent_team_tricks_container.add_child(wrapper)
+	for mindi_card in mindi_cards:
+		var trick_icon = TextureRect.new()
+		trick_icon.texture = mindi_card.texture
+		trick_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		trick_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		
+		var card_size = Vector2(80, 112)
+		trick_icon.custom_minimum_size = card_size
+
+		if winner_team == 0:
+			player_team_tricks_container.add_child(trick_icon)
+		else:
+			var wrapper = Control.new()
+			wrapper.custom_minimum_size = Vector2(card_size.y, card_size.x)
+			wrapper.add_child(trick_icon)
+			trick_icon.rotation_degrees = 90
+			trick_icon.position = Vector2(0, card_size.x)
+			opponent_team_tricks_container.add_child(wrapper)
