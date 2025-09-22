@@ -200,14 +200,16 @@ func evaluate_trick():
 	var winner_team = trick_leader_index % 2
 	team_trick_wins[winner_team] += 1
 
+	await animate_trick_capture(winner_team)
+	
 	var mindis_in_trick: Array[CardData] = []
 	for card in cards_on_table:
 		if card.rank == CardData.Rank._10:
 			team_mindi_count[winner_team] += 1
-			mindis_in_trick.append(card) # Add all mindis to an array
+			mindis_in_trick.append(card)
 
 	update_trick_display(winner_team, mindis_in_trick)
-	
+		
 	cards_played_this_round.append_array(cards_on_table)
 	team_tricks_captured[winner_team].append_array(cards_on_table)
 	
@@ -215,6 +217,7 @@ func evaluate_trick():
 	for node in get_tree().get_nodes_in_group("table_cards"):
 		node.queue_free()
 	
+	# Check for end of round or start the next trick
 	if players_hands[0].is_empty():
 		end_round()
 	else:
@@ -601,3 +604,26 @@ func update_trick_display(winner_team, mindi_cards: Array[CardData]):
 			trick_icon.rotation_degrees = 90
 			trick_icon.position = Vector2(0, card_size.x)
 			opponent_team_tricks_container.add_child(wrapper)
+
+func animate_trick_capture(winner_team):
+	var table_cards = get_tree().get_nodes_in_group("table_cards")
+	if table_cards.is_empty():
+		return
+
+	var target_pos = Vector2.ZERO
+	if winner_team == 0:
+		target_pos = player_team_tricks_container.global_position + player_team_tricks_container.size / 2
+	else:
+		target_pos = opponent_team_tricks_container.global_position + opponent_team_tricks_container.size / 2
+
+	var tween = create_tween()
+	tween.set_parallel(true) 
+
+	for card_node in table_cards:
+		tween.tween_property(card_node, "global_position", target_pos, 0.4)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(card_node, "scale", Vector2.ZERO, 0.4)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+
+	# Wait until the entire tween animation is finished before proceeding
+	await tween.finished
