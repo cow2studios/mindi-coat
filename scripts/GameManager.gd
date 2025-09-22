@@ -20,6 +20,8 @@ const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 @onready var pause_menu = $PauseMenu
 @onready var sort_button = $SortButton
 @onready var pause_button = $PauseButton
+@onready var player_team_tricks_container = $PlayerTeamTricksContainer
+@onready var opponent_team_tricks_container = $OpponentTeamTricksContainer
 
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
@@ -67,6 +69,11 @@ func start_new_game():
 	
 	for node in get_tree().get_nodes_in_group("cards"):
 		node.queue_free()
+	
+	for child in player_team_tricks_container.get_children():
+		child.queue_free()
+	for child in opponent_team_tricks_container.get_children():
+		child.queue_free()
 
 	# --- Play the Shuffle Animation ---
 	var shuffle_anim = ShuffleAnimationScene.instantiate()
@@ -192,6 +199,15 @@ func evaluate_trick():
 	self.trick_leader_index = player_who_played[winner_index_in_trick]
 	var winner_team = trick_leader_index % 2
 	team_trick_wins[winner_team] += 1
+
+	var mindi_in_trick = null
+	for card in cards_on_table:
+		if card.rank == CardData.Rank._10:
+			team_mindi_count[winner_team] += 1
+			mindi_in_trick = card
+			break 
+
+	update_trick_display(winner_team, mindi_in_trick)
 
 	for card in cards_on_table:
 		if card.rank == CardData.Rank._10: team_mindi_count[winner_team] += 1
@@ -551,3 +567,27 @@ func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> 
 	for suit in suit_scores:
 		if suit_scores[suit] > max_score: max_score = suit_scores[suit]; best_suit = suit
 	return best_suit
+
+func update_trick_display(winner_team, mindi_card):
+	# Create the icon that will be displayed
+	var trick_icon = TextureRect.new()
+	if mindi_card:
+		trick_icon.texture = mindi_card.texture
+	else:
+		trick_icon.texture = preload("res://assets/cards/back01.png")
+
+	trick_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	trick_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	
+	var card_size = Vector2(80, 112)
+	trick_icon.custom_minimum_size = card_size
+
+	if winner_team == 0: # Player's Team
+		player_team_tricks_container.add_child(trick_icon)
+	else: # Opponent's Team
+		var wrapper = Control.new()
+		wrapper.custom_minimum_size = Vector2(card_size.y, card_size.x)
+		wrapper.add_child(trick_icon)
+		trick_icon.rotation_degrees = 90
+		trick_icon.position = Vector2(0, card_size.x)
+		opponent_team_tricks_container.add_child(wrapper)

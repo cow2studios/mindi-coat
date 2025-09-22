@@ -50,3 +50,15 @@ offset_bottom = 64.0
 scale = Vector2(2, 2)
 theme = ExtResource("5_q8u5g")
 text = "Sort"
+
+[node name="PlayerTeamTricksContainer" type="HBoxContainer" parent="."]
+offset_left = 479.0
+offset_top = 923.0
+offset_right = 519.0
+offset_bottom = 963.0
+
+[node name="OpponentTeamTricksContainer" type="VBoxContainer" parent="."]
+offset_left = 1789.0
+offset_top = 73.0
+offset_right = 1829.0
+offset_bottom = 113.0
