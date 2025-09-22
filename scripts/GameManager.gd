@@ -20,10 +20,15 @@ const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
 @onready var pause_menu = $PauseMenu
 @onready var sort_button = $SortButton
 @onready var pause_button = $PauseButton
+@onready var player_team_tricks_container = $PlayerTeamTricksContainer
+@onready var opponent_team_tricks_container = $OpponentTeamTricksContainer
 
 # -- Game State --
 enum GameState {PLAYER_TURN, AI_TURN, EVALUATING, WAITING}
 var current_state = GameState.WAITING
+var is_dealing = false
+var has_sorted_this_round = false
+var is_hukum_set = false
 
 # -- Game Logic Variables --
 var players_hands: Array = []
@@ -33,7 +38,6 @@ var cards_played_this_round: Array[CardData] = [] # The AI's memory
 var current_turn_index = 0
 var trick_leader_index = 0
 var hukum_suit: CardData.Suit
-var is_hukum_set = false
 var team_tricks_captured: Array = [[], []]
 var team_mindi_count = [0, 0]
 var team_trick_wins = [0, 0]
@@ -45,6 +49,13 @@ func _ready():
 	pause_button.pressed.connect(toggle_pause)
 	start_new_game()
 
+func update_all_card_outlines():
+	for card_node in get_tree().get_nodes_in_group("cards"):
+		if is_hukum_set:
+			card_node.update_hukum_status(hukum_suit)
+		else:
+			card_node.update_hukum_status(null)
+
 func start_new_game():
 	# --- Reset game variables ---
 	players_hands.clear()
@@ -53,15 +64,23 @@ func start_new_game():
 		players_hands.append(typed_hand)
 
 	cards_on_table.clear(); player_who_played.clear()
-	cards_played_this_round.clear() # Clear the AI's memory
+	cards_played_this_round.clear()
 	is_hukum_set = false; team_tricks_captured = [[], []];
 	team_mindi_count = [0, 0]
 	team_trick_wins = [0, 0]
+	is_dealing = true
+	has_sorted_this_round = false
+	sort_button.disabled = true
 
 	hud.game_over_panel.hide()
 	
 	for node in get_tree().get_nodes_in_group("cards"):
 		node.queue_free()
+	
+	for child in player_team_tricks_container.get_children():
+		child.queue_free()
+	for child in opponent_team_tricks_container.get_children():
+		child.queue_free()
 
 	# --- Play the Shuffle Animation ---
 	var shuffle_anim = ShuffleAnimationScene.instantiate()
@@ -105,6 +124,7 @@ func play_card(card_data: CardData, player_index: int):
 			hukum_suit = card_data.suit
 			var suit_name = CardData.Suit.keys()[hukum_suit]
 			emit_signal("hukum_updated", suit_name)
+			update_all_card_outlines()
 	
 	display_card_on_table(card_data, player_index)
 	redraw_hands()
@@ -132,6 +152,12 @@ func _unhandled_input(event):
 		toggle_pause()
 
 func sort_player_hand():
+	if is_dealing or has_sorted_this_round:
+		return
+
+	has_sorted_this_round = true
+	sort_button.disabled = true
+
 	var suit_order = {
 		CardData.Suit.SPADES: 0, CardData.Suit.DIAMONDS: 1,
 		CardData.Suit.CLUBS: 2, CardData.Suit.HEARTS: 3
@@ -182,9 +208,16 @@ func evaluate_trick():
 	var winner_team = trick_leader_index % 2
 	team_trick_wins[winner_team] += 1
 
-	for card in cards_on_table:
-		if card.rank == CardData.Rank._10: team_mindi_count[winner_team] += 1
+	await animate_trick_capture(winner_team)
 	
+	var mindis_in_trick: Array[CardData] = []
+	for card in cards_on_table:
+		if card.rank == CardData.Rank._10:
+			team_mindi_count[winner_team] += 1
+			mindis_in_trick.append(card)
+
+	update_trick_display(winner_team, mindis_in_trick)
+		
 	cards_played_this_round.append_array(cards_on_table)
 	team_tricks_captured[winner_team].append_array(cards_on_table)
 	
@@ -192,6 +225,7 @@ func evaluate_trick():
 	for node in get_tree().get_nodes_in_group("table_cards"):
 		node.queue_free()
 	
+	# Check for end of round or start the next trick
 	if players_hands[0].is_empty():
 		end_round()
 	else:
@@ -295,6 +329,9 @@ func deal_cards_animation():
 		
 		await get_tree().create_timer(0.12).timeout
 
+	is_dealing = false
+	sort_button.disabled = false
+
 func redraw_hands():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
@@ -336,19 +373,41 @@ func redraw_hands():
 			
 			card_instance.add_to_group("player_hand_cards")
 			card_instance.add_to_group("cards")
+	
+	update_all_card_outlines()
 
 func display_card_on_table(card_data: CardData, player_index: int):
 	var card_instance = CardScene.instantiate()
 	add_child(card_instance)
-	var offset = Vector2.ZERO
+
+	# 1. Determine the animation's start and end positions
+	var start_pos = Vector2.ZERO
 	match player_index:
-		0: offset = Vector2(0, 75);
-		1: offset = Vector2(75, 0);
-		2: offset = Vector2(0, -75);
-		3: offset = Vector2(-75, 0);
-	card_instance.position = play_area_pos.position + offset
+		0: start_pos = player_hand_pos.global_position
+		1: start_pos = right_opponent_pos.global_position
+		2: start_pos = partner_hand_pos.global_position
+		3: start_pos = left_opponent_pos.global_position
+
+	var end_offset = Vector2.ZERO
+	match player_index:
+		0: end_offset = Vector2(0, 75)
+		1: end_offset = Vector2(75, 0)
+		2: end_offset = Vector2(0, -75)
+		3: end_offset = Vector2(-75, 0)
+	var end_pos = play_area_pos.position + end_offset
+
+	# 2. Set the card's initial state at the start position
+	card_instance.global_position = start_pos
 	card_instance.display_card(card_data)
-	card_instance.add_to_group("table_cards"); card_instance.add_to_group("cards")
+	card_instance.add_to_group("table_cards")
+	card_instance.add_to_group("cards")
+
+	# 3. Create and run the tween animation
+	var tween = create_tween()
+	# Use a smooth easing function for a nice feel
+	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	# Animate the 'global_position' property to the end_pos over 0.3 seconds
+	tween.tween_property(card_instance, "global_position", end_pos, 0.3)
 
 func get_trick_context():
 	var context = {"winning_card": null, "winning_player": - 1, "has_mindi": false, "is_strong_win": false}
@@ -517,3 +576,64 @@ func choose_best_hukum_suit(hand: Array[CardData], lead_suit: CardData.Suit) -> 
 	for suit in suit_scores:
 		if suit_scores[suit] > max_score: max_score = suit_scores[suit]; best_suit = suit
 	return best_suit
+
+func update_trick_display(winner_team, mindi_cards: Array[CardData]):
+	if mindi_cards.is_empty():
+		var trick_icon = TextureRect.new()
+		trick_icon.texture = preload("res://assets/cards/back01.png")
+		trick_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		trick_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		trick_icon.custom_minimum_size = Vector2(80, 112)
+
+		if winner_team == 0:
+			player_team_tricks_container.add_child(trick_icon)
+		else:
+			var wrapper = Control.new()
+			wrapper.custom_minimum_size = Vector2(112, 80)
+			wrapper.add_child(trick_icon)
+			trick_icon.rotation_degrees = 90
+			trick_icon.position = Vector2(0, 80)
+			opponent_team_tricks_container.add_child(wrapper)
+		return
+
+	for mindi_card in mindi_cards:
+		var trick_icon = TextureRect.new()
+		trick_icon.texture = mindi_card.texture
+		trick_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		trick_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		
+		var card_size = Vector2(80, 112)
+		trick_icon.custom_minimum_size = card_size
+
+		if winner_team == 0:
+			player_team_tricks_container.add_child(trick_icon)
+		else:
+			var wrapper = Control.new()
+			wrapper.custom_minimum_size = Vector2(card_size.y, card_size.x)
+			wrapper.add_child(trick_icon)
+			trick_icon.rotation_degrees = 90
+			trick_icon.position = Vector2(0, card_size.x)
+			opponent_team_tricks_container.add_child(wrapper)
+
+func animate_trick_capture(winner_team):
+	var table_cards = get_tree().get_nodes_in_group("table_cards")
+	if table_cards.is_empty():
+		return
+
+	var target_pos = Vector2.ZERO
+	if winner_team == 0:
+		target_pos = player_team_tricks_container.global_position + player_team_tricks_container.size / 2
+	else:
+		target_pos = opponent_team_tricks_container.global_position + opponent_team_tricks_container.size / 2
+
+	var tween = create_tween()
+	tween.set_parallel(true)
+
+	for card_node in table_cards:
+		tween.tween_property(card_node, "global_position", target_pos, 0.4)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(card_node, "scale", Vector2.ZERO, 0.4)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+
+	# Wait until the entire tween animation is finished before proceeding
+	await tween.finished
