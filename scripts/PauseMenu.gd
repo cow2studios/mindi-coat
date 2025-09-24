@@ -18,21 +18,6 @@ func _unhandled_input(event):
 		unpause_game()
 		get_viewport().set_input_as_handled()
 
-# This function will be called by the GameManager to update the score
-func update_info(score, hukum_set, hukum_suit, lead_suit):
-	your_team_score_label.text = "Your Team: %s" % score[0]
-	opponent_score_label.text = "Opponents: %s" % score[1]
-
-	if hukum_set:
-		hukum_value_label.text = CardData.Suit.keys()[hukum_suit].capitalize()
-	else:
-		hukum_value_label.text = "Not Set"
-		
-	if lead_suit:
-		lead_suit_value_label.text = CardData.Suit.keys()[lead_suit].capitalize()
-	else:
-		lead_suit_value_label.text = "None"
-
 func unpause_game():
 	get_tree().paused = false
 	hide()

@@ -10,6 +10,7 @@
 script = ExtResource("1_rvslj")
 
 [node name="background" parent="." instance=ExtResource("1_elqb8")]
+position = Vector2(960, 540)
 scale = Vector2(0.78, 0.88)
 
 [node name="PlayAreaPos" type="Marker2D" parent="."]
@@ -52,13 +53,13 @@ theme = ExtResource("5_q8u5g")
 text = "Sort"
 
 [node name="PlayerTeamTricksContainer" type="HBoxContainer" parent="."]
-offset_left = 479.0
-offset_top = 923.0
-offset_right = 519.0
-offset_bottom = 963.0
+offset_left = 466.0
+offset_top = 928.0
+offset_right = 506.0
+offset_bottom = 968.0
 
 [node name="OpponentTeamTricksContainer" type="VBoxContainer" parent="."]
-offset_left = 1805.0
-offset_top = 22.0
-offset_right = 1845.0
-offset_bottom = 62.0
+offset_left = 1835.0
+offset_top = 68.0
+offset_right = 1875.0
+offset_bottom = 108.0

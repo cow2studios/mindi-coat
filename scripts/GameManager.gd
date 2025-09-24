@@ -208,10 +208,6 @@ func toggle_pause():
 		pause_menu.hide()
 	else:
 		get_tree().paused = true
-		var current_lead_suit = null
-		if not cards_on_table.is_empty():
-			current_lead_suit = cards_on_table[0].suit
-		pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
 		pause_menu.show()
 
 func _unhandled_input(event):
