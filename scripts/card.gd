@@ -12,7 +12,7 @@ func update_hukum_status(current_hukum_suit):
 	if not is_instance_valid(card_data):
 		return
 		
-	if current_hukum_suit != null and card_data.suit == current_hukum_suit:
+	if $CardSprite.visible and current_hukum_suit != null and card_data.suit == current_hukum_suit:
 		hukum_outline.show()
 	else:
 		hukum_outline.hide()

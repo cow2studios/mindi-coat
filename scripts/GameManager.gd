@@ -8,6 +8,9 @@ signal lead_suit_updated(suit_name)
 
 const CardScene = preload("res://scenes/Card.tscn")
 const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
+const HukumAnimationScene = preload("res://scenes/HukumAnimation.tscn")
+
+const SUIT_ICONS = preload("res://assets/suits/suit_icons.tres")
 
 # -- Node References --
 @onready var player_hand_pos = $PlayerHandPos
@@ -124,6 +127,22 @@ func play_card(card_data: CardData, player_index: int):
 			hukum_suit = card_data.suit
 			var suit_name = CardData.Suit.keys()[hukum_suit]
 			emit_signal("hukum_updated", suit_name)
+			
+			var hukum_anim = HukumAnimationScene.instantiate()
+			add_child(hukum_anim)
+			hukum_anim.global_position = play_area_pos.global_position
+			
+			var suit_texture
+			match hukum_suit:
+				CardData.Suit.SPADES:
+					suit_texture = SUIT_ICONS.spades
+				CardData.Suit.HEARTS:
+					suit_texture = SUIT_ICONS.hearts
+				CardData.Suit.DIAMONDS:
+					suit_texture = SUIT_ICONS.diamonds
+				CardData.Suit.CLUBS:
+					suit_texture = SUIT_ICONS.clubs
+			hukum_anim.play(suit_texture)			
 			update_all_card_outlines()
 	
 	display_card_on_table(card_data, player_index)
