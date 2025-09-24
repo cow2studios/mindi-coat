@@ -43,10 +43,10 @@ theme_type_variation = &"PauseButton"
 text = "Pause  Menu"
 
 [node name="SortButton" type="Button" parent="."]
-offset_left = 1722.0
-offset_top = 10.0
-offset_right = 1817.0
-offset_bottom = 64.0
+offset_left = 12.0
+offset_top = 961.0
+offset_right = 107.0
+offset_bottom = 1015.0
 scale = Vector2(2, 2)
 theme = ExtResource("5_q8u5g")
 text = "Sort"
@@ -58,7 +58,7 @@ offset_right = 519.0
 offset_bottom = 963.0
 
 [node name="OpponentTeamTricksContainer" type="VBoxContainer" parent="."]
-offset_left = 1789.0
-offset_top = 73.0
-offset_right = 1829.0
-offset_bottom = 113.0
+offset_left = 1805.0
+offset_top = 22.0
+offset_right = 1845.0
+offset_bottom = 62.0
