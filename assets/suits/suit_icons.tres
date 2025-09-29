@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SuitIconData" load_steps=6 format=3 uid="uid://dq154fkhe2opc"]
+
+[ext_resource type="Texture2D" uid="uid://bxkdr83ik4o6o" path="res://assets/suits/club.png" id="1_0ohjl"]
+[ext_resource type="Script" uid="uid://bpiccc2tx8kda" path="res://scripts/SuitIconData.gd" id="1_m83o4"]
+[ext_resource type="Texture2D" uid="uid://bgrlj8lqttw14" path="res://assets/suits/diamond.png" id="2_edvdk"]
+[ext_resource type="Texture2D" uid="uid://yknf23fq3nkf" path="res://assets/suits/heart.png" id="3_gg8m8"]
+[ext_resource type="Texture2D" uid="uid://dtb80lxld8rbx" path="res://assets/suits/spades.png" id="5_mt3cg"]
+
+[resource]
+script = ExtResource("1_m83o4")
+spades = ExtResource("5_mt3cg")
+hearts = ExtResource("3_gg8m8")
+diamonds = ExtResource("2_edvdk")
+clubs = ExtResource("1_0ohjl")

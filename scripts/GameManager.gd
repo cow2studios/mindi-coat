@@ -8,6 +8,9 @@ signal lead_suit_updated(suit_name)
 
 const CardScene = preload("res://scenes/Card.tscn")
 const ShuffleAnimationScene = preload("res://scenes/ShuffleAnimation.tscn")
+const HukumAnimationScene = preload("res://scenes/HukumAnimation.tscn")
+
+const SUIT_ICONS = preload("res://assets/suits/suit_icons.tres")
 
 # -- Node References --
 @onready var player_hand_pos = $PlayerHandPos
@@ -41,13 +44,18 @@ var hukum_suit: CardData.Suit
 var team_tricks_captured: Array = [[], []]
 var team_mindi_count = [0, 0]
 var team_trick_wins = [0, 0]
+var current_dealer_index = -1
+var last_round_loser_team = -1
+var last_dealer_team0 = -1
+var last_dealer_team1 = -1
+var team_coats = [0, 0]
 
 func _ready():
 	timer.timeout.connect(on_timer_timeout)
 	game_over.connect(hud.show_game_over)
 	sort_button.pressed.connect(sort_player_hand)
 	pause_button.pressed.connect(toggle_pause)
-	start_new_game()
+	start_new_match()
 
 func update_all_card_outlines():
 	for card_node in get_tree().get_nodes_in_group("cards"):
@@ -56,8 +64,53 @@ func update_all_card_outlines():
 		else:
 			card_node.update_hukum_status(null)
 
-func start_new_game():
-	# --- Reset game variables ---
+func start_new_match():
+	# Randomly select the first dealer for the entire match
+	current_dealer_index = randi() % 4
+	
+	# Reset all match-level stats
+	team_coats = [0, 0]
+	last_round_loser_team = -1
+	last_dealer_team0 = -1
+	last_dealer_team1 = -1
+
+	# Record the first dealer for their respective team
+	if current_dealer_index % 2 == 0:
+		last_dealer_team0 = current_dealer_index
+	else:
+		last_dealer_team1 = current_dealer_index
+	
+	# Start the first round of the match
+	start_new_round()
+
+func start_new_round():
+	# --- Corrected Dealer Determination Logic ---
+	if last_round_loser_team != -1: # If this is not the first round
+		var dealing_team = last_round_loser_team
+		
+		# A team with a coat is forced to deal
+		if team_coats[dealing_team] > 0:
+			pass # The dealing team is already correctly set to the losers
+
+		if dealing_team == 0: # Player's team (1 & 3) must deal
+			# If player 1 (index 0) was the last dealer for this team, switch to player 3 (index 2)
+			if last_dealer_team0 == 0:
+				current_dealer_index = 2
+			# Otherwise, player 1 (index 0) deals
+			else:
+				current_dealer_index = 0
+			last_dealer_team0 = current_dealer_index # Remember who just dealt
+		
+		else: # Opponent's team (2 & 4) must deal
+			# If player 2 (index 1) was the last dealer for this team, switch to player 4 (index 3)
+			if last_dealer_team1 == 1:
+				current_dealer_index = 3
+			# Otherwise, player 2 (index 1) deals
+			else:
+				current_dealer_index = 1
+			last_dealer_team1 = current_dealer_index # Remember who just dealt
+				
+	# --- Reset round variables (this part is unchanged) ---
 	players_hands.clear()
 	for i in range(4):
 		var typed_hand: Array[CardData] = []
@@ -71,7 +124,6 @@ func start_new_game():
 	is_dealing = true
 	has_sorted_this_round = false
 	sort_button.disabled = true
-
 	hud.game_over_panel.hide()
 	
 	for node in get_tree().get_nodes_in_group("cards"):
@@ -82,30 +134,29 @@ func start_new_game():
 	for child in opponent_team_tricks_container.get_children():
 		child.queue_free()
 
-	# --- Play the Shuffle Animation ---
+	# --- Play the Shuffle Animation (unchanged) ---
 	var shuffle_anim = ShuffleAnimationScene.instantiate()
 	add_child(shuffle_anim)
 	shuffle_anim.global_position = play_area_pos.position
-	
 	var anim_player = shuffle_anim.get_node("AnimationPlayer")
-	
 	SoundManager.play("card-shuffle")
 	anim_player.play("shuffle")
-	
 	await anim_player.animation_finished
-	
 	shuffle_anim.queue_free()
 	
-	# --- Deal cards ---
+	# --- Deal cards with new rules (unchanged) ---
 	var deck = Deck.get_shuffled_deck()
+	var deal_to_player_index = (current_dealer_index + 1) % 4
 	for i in range(13):
-		for player_index in range(4):
-			players_hands[player_index].append(deck.pop_front())
+		for j in range(4):
+			players_hands[deal_to_player_index].append(deck.pop_front())
+			deal_to_player_index = (deal_to_player_index + 1) % 4
 	
 	await deal_cards_animation()
 	
-	# --- Start the game ---
-	trick_leader_index = 0
+	# --- Start the game (unchanged and correct) ---
+	# The player after the dealer starts the first trick
+	trick_leader_index = (current_dealer_index + 1) % 4
 	start_next_trick()
 
 func play_card(card_data: CardData, player_index: int):
@@ -124,6 +175,22 @@ func play_card(card_data: CardData, player_index: int):
 			hukum_suit = card_data.suit
 			var suit_name = CardData.Suit.keys()[hukum_suit]
 			emit_signal("hukum_updated", suit_name)
+			
+			var hukum_anim = HukumAnimationScene.instantiate()
+			add_child(hukum_anim)
+			hukum_anim.global_position = play_area_pos.global_position
+			
+			var suit_texture
+			match hukum_suit:
+				CardData.Suit.SPADES:
+					suit_texture = SUIT_ICONS.spades
+				CardData.Suit.HEARTS:
+					suit_texture = SUIT_ICONS.hearts
+				CardData.Suit.DIAMONDS:
+					suit_texture = SUIT_ICONS.diamonds
+				CardData.Suit.CLUBS:
+					suit_texture = SUIT_ICONS.clubs
+			hukum_anim.play(suit_texture)			
 			update_all_card_outlines()
 	
 	display_card_on_table(card_data, player_index)
@@ -141,10 +208,6 @@ func toggle_pause():
 		pause_menu.hide()
 	else:
 		get_tree().paused = true
-		var current_lead_suit = null
-		if not cards_on_table.is_empty():
-			current_lead_suit = cards_on_table[0].suit
-		pause_menu.update_info(team_mindi_count, is_hukum_set, hukum_suit, current_lead_suit)
 		pause_menu.show()
 
 func _unhandled_input(event):
@@ -234,23 +297,42 @@ func evaluate_trick():
 func end_round():
 	current_state = GameState.WAITING
 	var final_message = ""
-	
+	var winner_team = -1
+
 	if team_mindi_count[0] > team_mindi_count[1]:
+		winner_team = 0
 		final_message = "Your  Team  Wins!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
-		if team_mindi_count[1] == 0: final_message += "\nOpponent  has  COAT!"
 	elif team_mindi_count[1] > team_mindi_count[0]:
-		final_message = "Opponents  Win!\nScore: %s - %s" % [team_mindi_count[0], team_mindi_count[1]]
-		if team_mindi_count[0] == 0: final_message += "\nYour  team  has  COAT!"
-	else: # Mindi count is 2-2, check the tie-breaker
+		winner_team = 1
+		final_message = "Opponents  Win!\nScore: %s - %s" % [team_mindi_count[1], team_mindi_count[0]]
+	else: # Tie-breaker
 		if team_trick_wins[0] > team_trick_wins[1]:
+			winner_team = 0
 			final_message = "Your  Team  Wins  on  Tricks!\nTricks: %s - %s" % [team_trick_wins[0], team_trick_wins[1]]
-		elif team_trick_wins[1] > team_trick_wins[0]:
+		else:
+			winner_team = 1
 			final_message = "Opponents  Win  on  Tricks!\nTricks: %s - %s" % [team_trick_wins[1], team_trick_wins[0]]
-		else: # Extremely rare case of 7-6 tricks and a 2-2 Mindi split, resulting in a true draw
-			final_message = "It's a True Draw!\nScore: 2 - 2"
+
+	last_round_loser_team = 1 if winner_team == 0 else 0
+	
+	# --- Check for Coat conditions ---
+	if team_mindi_count[winner_team] == 4:
+		# If the winning team got all Mindis, the losing team gets a Coat
+		team_coats[last_round_loser_team] += 1
+		final_message += "\nOpponent has COAT!" if winner_team == 0 else "\nYour team has COAT!"
+	
+	# Check if a team with a coat managed to remove it
+	if team_coats[winner_team] > 0 and team_mindi_count[winner_team] == 4:
+		team_coats[winner_team] -= 1
+		final_message += "\nCOAT REMOVED!"
 
 	hud.show()
 	emit_signal("game_over", final_message)
+	
+	# Wait for a few seconds before starting the next round
+	await get_tree().create_timer(4.0).timeout
+	
+	start_new_round()
 
 func next_turn():
 	current_turn_index = (current_turn_index + 1) % 4
@@ -279,18 +361,24 @@ func do_ai_turn():
 	else: print("ERROR: AI has no legal moves")
 
 func deal_cards_animation():
+	# Clear any cards left over from a previous state
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
 		node.queue_free()
 	
 	var hand_positions = [player_hand_pos, right_opponent_pos, partner_hand_pos, left_opponent_pos]
 	
-	for j in range(players_hands[0].size()):
-		for i in range(4):
-			var player_index = i
+	# Determine the first player to receive a card
+	var start_player_index = (current_dealer_index + 1) % 4
+	
+	# Loop 13 times (for the 13 cards in each player's hand)
+	for card_idx_in_hand in range(13):
+		# Loop 4 times (for the 4 players)
+		for player_offset in range(4):
+			# Calculate the current player to deal to, wrapping around
+			var player_index = (start_player_index + player_offset) % 4
+			
 			var hand = players_hands[player_index]
-			if j >= hand.size(): continue
-
-			var card_data = hand[j]
+			var card_data = hand[card_idx_in_hand]
 			var is_human = (player_index == 0)
 			
 			var card_instance = CardScene.instantiate()
@@ -301,20 +389,21 @@ func deal_cards_animation():
 			
 			SoundManager.play("card-slide")
 			
+			# This logic calculates the final resting place of each card
 			var final_pos = hand_positions[player_index].position
 			var player_card_spacing = 90
 			var enemy_card_spacing = 20
 			var card_rotation_degrees = 0
 			
-			if i == 1 or i == 3: # Left and Right opponents
+			if player_index == 1 or player_index == 3: # Left and Right opponents
 				card_rotation_degrees = 90
 				var total_size = (hand.size() - 1) * enemy_card_spacing
-				var start_offset = - total_size / 2.0
-				final_pos.y += start_offset + (j * enemy_card_spacing)
+				var start_offset = -total_size / 2.0
+				final_pos.y += start_offset + (card_idx_in_hand * enemy_card_spacing)
 			else: # Human and Partner
 				var total_size = (hand.size() - 1) * player_card_spacing
-				var start_offset = - total_size / 2.0
-				final_pos.x += start_offset + (j * player_card_spacing)
+				var start_offset = -total_size / 2.0
+				final_pos.x += start_offset + (card_idx_in_hand * player_card_spacing)
 			
 			var tween = create_tween()
 			tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
@@ -326,11 +415,13 @@ func deal_cards_animation():
 			
 			card_instance.add_to_group("player_hand_cards")
 			card_instance.add_to_group("cards")
-		
-		await get_tree().create_timer(0.12).timeout
+			
+			# This short delay creates the card-by-card dealing effect
+			await get_tree().create_timer(0.08).timeout
 
 	is_dealing = false
 	sort_button.disabled = false
+	update_all_card_outlines()
 
 func redraw_hands():
 	for node in get_tree().get_nodes_in_group("player_hand_cards"):
